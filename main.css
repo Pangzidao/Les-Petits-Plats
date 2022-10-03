@@ -1,0 +1,26 @@
+*{
+    color: black;
+}
+
+header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header img{
+    width: 50px;
+}
+
+header h1{
+    color:#D04F4F;
+}
+
+.search-options{
+    border: solid;
+}
+
+.tagListElements:hover{
+    cursor: pointer;
+    background-color: lightgrey;
+}
