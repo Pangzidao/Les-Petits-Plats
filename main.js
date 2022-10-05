@@ -125,7 +125,10 @@ Array.from(searchByTagDOM).forEach(element => {
             Array.from(tagListElementsDOM).forEach(tag =>{
                 tag.addEventListener("click", function(e){
                     console.log(e.target.id)
-                    searchedElements.push(e.target.id)
+                    tagsSelected.push(e.target.id)
+                    console.log(tagsSelected)
+                    //tagsSelectedDisplay()
+                    searchedElements.push(...tagsSelected)
                     search()
                 })
             })
@@ -144,9 +147,31 @@ Array.from(searchByTagDOM).forEach(element => {
     })*/
 });
 
+const tagsSelected = []
+/*
+function tagsSelectedDisplay(tag){
+    const tagsSelectedDOM = document.getElementById("tags-selected")
+    tagsDisplay.push(tag)
+
+    console.log(tagsDisplay)
+
+    let html=""
+
+    tagsDisplay.forEach(function(tag, index) {
+        html += `<p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i>`
+    })
+
+    tagsSelectedDOM.innerHTML = html
+}
+
+function removeTag(index){
+    
+    tagsDisplay.splice(index, 1)
+}
 
 
 
+*/
 
 
 
