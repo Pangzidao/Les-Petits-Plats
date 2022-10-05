@@ -4,6 +4,9 @@ const searchedElementInput = document.getElementById("elementSearched")
 let matchingRecipes = []
 let matchingElements = []
 let recipesIsMatching = []
+let listOfIngredientTagsWithDouble = []
+let listOfApplianceTagsWithDouble = []
+let listOfUstensilTagsWithDouble = []
 let listOfIngredientTags = []
 let listOfApplianceTags = []
 let listOfUstensilTags = []
@@ -11,66 +14,39 @@ let searchedElements = []
 
 // getting tags
 recipes.forEach(recipe =>{
-    recipe.ingredients.forEach(e => listOfIngredientTags.push(e.ingredient.toLowerCase()))
-    recipe.ustensils.forEach(e => listOfUstensilTags.push(e.toLowerCase()))
-    listOfApplianceTags.push(recipe.appliance.toLowerCase())
+    recipe.ingredients.forEach(e => listOfIngredientTagsWithDouble.push(e.ingredient.toLowerCase()))
+    recipe.ustensils.forEach(e => listOfUstensilTagsWithDouble.push(e.toLowerCase()))
+    listOfApplianceTagsWithDouble.push(recipe.appliance.toLowerCase())
 })
 
-// removing repetive elements in ingredient tags list
 
-listOfIngredientTags.forEach(ingredient => {
-    let repetitiveIngredient = listOfIngredientTags.filter(word => word === ingredient)
+//tags without double
 
-    while (repetitiveIngredient.length > 1){
-        let lastIndexOfRepetiveIngredient = listOfIngredientTags.lastIndexOf(repetitiveIngredient[0])
-        listOfIngredientTags.splice(lastIndexOfRepetiveIngredient, 1)
-        repetitiveIngredient.pop();
-    }
-})
+function removingDouble(listOfTags){
+    return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
+}
 
-// removing repetive elements in appliance tags list
-
-listOfApplianceTags.forEach(appliance => {
-    let repetitiveAppliance = listOfApplianceTags.filter(word => word === appliance)
-
-    while (repetitiveAppliance.length > 1){
-        let lastIndexOfRepetiveAppliance = listOfApplianceTags.lastIndexOf(repetitiveAppliance[0])
-        listOfApplianceTags.splice(lastIndexOfRepetiveAppliance, 1)
-        repetitiveAppliance.pop();
-    }
-})
-
-// removing repetive elements in ustensil tags list
-
-listOfUstensilTags.forEach(ustensil => {
-    let repetitiveUstensil = listOfUstensilTags.filter(word => word === ustensil)
-
-    while (repetitiveUstensil.length > 1){
-        let lastIndexOfRepetiveUstensil = listOfUstensilTags.lastIndexOf(repetitiveUstensil[0])
-        listOfUstensilTags.splice(lastIndexOfRepetiveUstensil, 1)
-        repetitiveUstensil.pop();
-    }
-})
+listOfIngredientTags = removingDouble(listOfIngredientTagsWithDouble)
+listOfApplianceTags = removingDouble(listOfApplianceTagsWithDouble);
+listOfUstensilTags = removingDouble(listOfUstensilTagsWithDouble)
 
 // search bar
 
 function searchBar(){
       // transformer la recherche en un tableau contenant les éléments recherchés
+      searchedElements.length = 0
       let searchString = searchedElementInput.value.toLowerCase()
       let searchedElementsBar = searchString.split(" ");
       searchedElementsBar.forEach(e => searchedElements.push(e))        
-      search(searchedElements)
+      search()
 
 }
 
 // search function
-
-function search(searchedElements){
+function search(){
     
     // emptying matching recipes array
     matchingRecipes.length = 0;
-
-  
 
     // searching in each recipe
     recipes.forEach(recipe => {
@@ -113,37 +89,69 @@ function search(searchedElements){
 
 // research by tags
 
-// research by ingredient tags
-let ingredientInput = document.getElementById("ingredientSearched")
-let listOfIngredientTagsDOM = document.getElementById("listOfIngredientTags")
-let html =""
+// selecting tags field
+const searchByTagDOM = document.getElementsByClassName("searchByTag");
+const generalListOfTags = {
+    "ingredientTags" : listOfIngredientTags,
+    "applianceTags" : listOfApplianceTags,
+    "ustensilTags" : listOfUstensilTags
+}
 
-// at each input, change the ingredient tags list and display it
-ingredientInput.addEventListener("input", function(e){
-    let ingredientSearched = ingredientInput.value.toLowerCase()
-    let listOfIngredientsLowerCase = listOfIngredientTags.map(e => e.toLowerCase())
-    const newListOfIngredientTags = listOfIngredientsLowerCase.filter(tag => tag.includes(ingredientSearched))
+Array.from(searchByTagDOM).forEach(element => {
 
+    let html = ""
+    element.addEventListener("focus", function(){
+        html = ""
+        let tagsType = element.id
+        const currentListOfTags = generalListOfTags[tagsType]
+        const currentTagFieldDOM = document.getElementById(`${tagsType}-display`)
 
-    html = ""    
-    newListOfIngredientTags.forEach(ingredient =>{
+        element.addEventListener("input", function(e){
+            html=""
+            let searchInput = e.target.value;
+            let trimCurrentListOfTags = []
 
-        html += `<p class="tagListElements" id="${ingredient}">${ingredient}</p>`
+            if (searchInput.length > 0){
+                trimCurrentListOfTags = currentListOfTags.filter(tag => tag.includes(searchInput))
+            }else{
+                trimCurrentListOfTags.length = 0
+            };
 
-        listOfIngredientTagsDOM.innerHTML = html
-    })
+            trimCurrentListOfTags.forEach(tag =>  html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
+            currentTagFieldDOM.innerHTML = html;
 
-    // select tag
-    const tagListElementsDOM = document.getElementsByClassName("tagListElements")
+            let tagListElementsDOM = document.getElementsByClassName("tagListElements");
 
-    Array.from(tagListElementsDOM).forEach(tagListElement => {
-        tagListElement.addEventListener("click", e => {
-            console.log(e.target.id)
-            searchedElements.push(e.target.id)
-            search(searchedElements)
+            Array.from(tagListElementsDOM).forEach(tag =>{
+                tag.addEventListener("click", function(e){
+                    console.log(e.target.id)
+                    searchedElements.push(e.target.id)
+                    search()
+                })
+            })
+
         })
+
+
     })
-})
+
+
+    /*element.addEventListener("focusout", function(){
+        html = ""
+        let tagsType = element.id
+        const lastTagFieldDOM = document.getElementById(`${tagsType}-display`)
+        lastTagFieldDOM.innerHTML = html
+    })*/
+});
+
+
+
+
+
+
+
+
+
 
 
 
