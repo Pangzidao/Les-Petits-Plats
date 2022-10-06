@@ -108,7 +108,6 @@ Array.from(searchByTagDOM).forEach(element => {
 });
 
 
-
 const tagsSelected = []
 
 function tagsSelectedDisplay(tags){
@@ -135,9 +134,6 @@ function tagSelected(){
     search()
     tagsSelectedDisplay(tagsSelected)
 }
-
-
-
 
 
 // search function
