@@ -24,3 +24,97 @@ header h1{
     cursor: pointer;
     background-color: lightgrey;
 }
+
+#searchBar{
+    width: 100%;
+    display: flex;
+}
+
+#elementSearched{
+    flex-grow: 1;
+    border: none;
+    background-color: lightgrey;
+}
+
+#searchButton{
+    border: none;
+    background-color: lightgrey;
+}
+
+#tags-selected{
+    display: flex;
+}
+
+#tagSearch{
+    display: flex;
+    z-index: 2;
+    position: absolute;
+    top:200px;
+}
+
+#recipes{
+    position: absolute;
+    top:250px;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+    justify-content: space-between;
+}
+
+.tags-display{
+    background-color: aqua;
+}
+
+.recipe-card{
+    border: solid;
+    width: 28%;
+    margin: 10px;
+    height:800px;
+}
+
+
+
+.photo-holder{
+    height: 30%;
+    width: 100%;
+    background-color: grey;
+}
+
+.recipe-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recipe-header h2{
+    font-size: medium;
+    margin: 10px;
+}
+
+.recipe-time{
+    display: flex;
+    width: 100px;
+    justify-content: flex-end;
+    margin: 5px;
+}
+
+.recipe-time i{
+    margin: 3px;
+}
+
+.recipe-main-text{
+    width: 100%;
+    display: flex;
+}
+
+.ingredients-list{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    justify-content: flex-start;
+}
+
+.recipe-description{
+    width: 50%;
+}
