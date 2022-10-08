@@ -59,7 +59,7 @@ function searchBar(){
 }
 
 
-// research by tags
+// research by tagscc
 
 // selecting tags field
 const searchByTagDOM = document.getElementsByClassName("searchByTag");
