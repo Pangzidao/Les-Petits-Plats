@@ -37,9 +37,6 @@ const generalListOfTags = {
     "ustensilTags" : listOfUstensilTags
 }
 
-const allTheTags = listOfIngredientTags.concat(listOfApplianceTags, listOfUstensilTags)
-
-
 // search bar
 
 searchedElementInput.addEventListener("input", function(){
@@ -77,6 +74,13 @@ Array.from(searchByTagDOM).forEach(element => {
         const currentListOfTags = generalListOfTags[tagsType]
         const currentTagFieldDOM = document.getElementById(`${tagsType}-display`)
 
+        currentTagFieldDOM.addEventListener("click", function(e){
+            console.log(e.target.closest("p").id)
+            tagsSelected.push(e.target.id)
+                    tagsSelectedDisplay()
+                    search()
+        })
+
         element.addEventListener("input", function(e){
             html=""
             let searchInput = e.target.value;
@@ -91,54 +95,46 @@ Array.from(searchByTagDOM).forEach(element => {
             trimCurrentListOfTags.forEach(tag =>  html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
             currentTagFieldDOM.innerHTML = html;
 
-            let tagListElementsDOM = document.getElementsByClassName("tagListElements");
-
-            Array.from(tagListElementsDOM).forEach(tag =>{
-                tag.addEventListener("click", function(e){
-                    tagsSelected.push(e.target.id)
-                    tagSelected(tagsSelected)
-  
-                })
-            })
-
         })
 
     })
 
 });
 
+function removeTag(index){
+    
+    tagsSelected.splice(index, 1)
+    tagsSelectedDisplay()
+    search()
+}
+
+
+
 
 const tagsSelected = []
 
-function tagsSelectedDisplay(tags){
+function tagsSelectedDisplay(){
     const tagsSelectedDOM = document.getElementById("tags-selected")
 
     let html=""
 
-    tags.forEach(function(tag, index) {
+    console.log(tagsSelected)
+
+
+    tagsSelected.forEach(function(tag, index) {
         html += `<p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i>`
     })
 
     tagsSelectedDOM.innerHTML = html
 }
 
-function removeTag(index){
-    
-    tagsSelected.splice(index, 1)
-    tagSelected(tagsSelected)
-}
-
-function tagSelected(){
-    search()
-    tagsSelectedDisplay(tagsSelected)
-}
 
 
 // search function
 function search(){
 
     searchedElements = searchedElementsBar.concat(tagsSelected)
-    console.log(searchedElements)
+    //console.log(searchedElements)
 
 
     // emptying matching recipes array
@@ -172,6 +168,9 @@ function search(){
             ||recipe.description.toLowerCase().includes(searchedElement)
             ||ingredientsString.includes(searchedElement)
             ||ustensilsString.includes(searchedElement)
+            ||recipe.appliance.toLowerCase().includes(searchedElement)
+
+
 
             ){
                 recipesIsMatching.push(true)
@@ -187,7 +186,7 @@ function search(){
             matchingRecipes.push(recipe)
         }
     })
-    console.log(matchingRecipes)
+    //console.log(matchingRecipes)
     recipesDisplay(matchingRecipes)
 }
 
