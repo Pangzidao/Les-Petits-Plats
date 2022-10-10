@@ -109,7 +109,7 @@ function tagsSelectedDisplay(){
     let html=""
 
     tagsSelected.forEach(function(tag, index) {
-        html += `<p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i>`
+        html += `<div class="tagSelected"><p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i></div>`
     })
 
     tagsSelectedDOM.innerHTML = html
@@ -117,7 +117,7 @@ function tagsSelectedDisplay(){
 
 
 
-// search functiongzrgz
+// search function
 function search(){
 
     let matchingRecipes = []
