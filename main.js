@@ -117,7 +117,7 @@ function tagsSelectedDisplay(){
 
 
 
-// search functiongzrgz
+// search function
 function search(){
 
     let matchingRecipes = []
