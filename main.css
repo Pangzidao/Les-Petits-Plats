@@ -2,11 +2,19 @@
     color: black;
 }
 
+main{
+    margin:10px 60px 0px 60px;
+}
+
 header{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
+.searchByTagOptions::-webkit-input-placeholder {
+    color: white;
+  }
 
 header img{
     width: 50px;
@@ -16,19 +24,11 @@ header h1{
     color:#D04F4F;
 }
 
-.search-options{
-    border: solid;
-}
-
 .tagListElements:hover{
     cursor: pointer;
     background-color: lightgrey;
 }
 
-#searchBar{
-    width: 100%;
-    display: flex;
-}
 
 #elementSearched{
     flex-grow: 1;
@@ -45,12 +45,6 @@ header h1{
     display: flex;
 }
 
-#tagSearch{
-    display: flex;
-    z-index: 2;
-    position: absolute;
-    top:200px;
-}
 
 #recipes{
     position: absolute;
@@ -64,6 +58,8 @@ header h1{
 
 .tags-display{
     background-color: aqua;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .recipe-card{
@@ -73,7 +69,11 @@ header h1{
     height:800px;
 }
 
-
+#tagSearchContainer{
+    position: absolute;
+    top:200px;
+    z-index: 2;
+}
 
 .photo-holder{
     height: 30%;
