@@ -1,5 +1,6 @@
 // getting tags
 
+// tags arrays
 let listOfIngredientTagsWithDouble = []
 let listOfApplianceTagsWithDouble = []
 let listOfUstensilTagsWithDouble = []
@@ -7,12 +8,14 @@ let listOfIngredientTags = []
 let listOfApplianceTags = []
 let listOfUstensilTags = []
 
+// raw tags arrays
 recipes.forEach(recipe =>{
     recipe.ingredients.forEach(e => listOfIngredientTagsWithDouble.push(e.ingredient.toLowerCase()))
     recipe.ustensils.forEach(e => listOfUstensilTagsWithDouble.push(e.toLowerCase()))
     listOfApplianceTagsWithDouble.push(recipe.appliance.toLowerCase())
 })
 
+// removing double from raw tags arrays
 function removingDouble(listOfTags){
     return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
 }
@@ -21,6 +24,7 @@ listOfIngredientTags = removingDouble(listOfIngredientTagsWithDouble)
 listOfApplianceTags = removingDouble(listOfApplianceTagsWithDouble);
 listOfUstensilTags = removingDouble(listOfUstensilTagsWithDouble)
 
+// generalListOfTags object
 const generalListOfTags = {
     "ingredientTags" : listOfIngredientTags,
     "applianceTags" : listOfApplianceTags,
@@ -38,27 +42,22 @@ let searchedElementsBar = []
 
 function searchBar(){
     
-      // transformer la recherche en un tableau contenant les éléments recherchés
-      let searchString = searchedElementInput.value.toLowerCase().trim()
-      if (searchString.length > 2){
+    let searchString = searchedElementInput.value.toLowerCase().trim()
+    
+    if (searchString.length > 2){
         searchedElementsBar = searchString.split(" ");
         search()
     }else{
         searchedElementsBar =[];
         search()
     } 
-    
-    console.log(searchedElementsBar)
 }
 
 
 // research by tags
-//const searchByTagDOM = document.getElementsByClassName("searchByTag");
 const searchByTagDOM = document.getElementById("tagSearch")
-const dropDownSymbol = document.getElementsByClassName("fa-chevron-down")
-const dropUpSymbol = document.getElementsByClassName("fa-chevron-up")
 
-
+// event when focus in one of the tags fields
 searchByTagDOM.addEventListener("focusin", function(e){
     const currentTagsInputDOM = e.target
     const tagsType = currentTagsInputDOM.id
@@ -67,6 +66,7 @@ searchByTagDOM.addEventListener("focusin", function(e){
     const currentTagFieldDOM = document.getElementById(`${tagsType}-display`)
     const othersTagFieldDOM = Array.from(searchByTagOptionsDOM).filter(e => e !== currentTagFieldDOM)
 
+    // event when an input is entered in one of the tags fields
     currentTagsInputDOM.addEventListener("input", function(e){
         let searchInput = currentTagsInputDOM.value
         const trimCurrentListOfTags = currentListOfTags.filter(tag => tag.includes(searchInput))
@@ -75,6 +75,7 @@ searchByTagDOM.addEventListener("focusin", function(e){
     listOfTagsDisplay(currentListOfTags,currentTagFieldDOM, othersTagFieldDOM)
 })
 
+// display tags
 const tagsSelected = []
 
 function listOfTagsDisplay(ListOfTags, currentTagFieldDOM, othersTagFieldDOM){
@@ -84,6 +85,7 @@ function listOfTagsDisplay(ListOfTags, currentTagFieldDOM, othersTagFieldDOM){
     currentTagFieldDOM.innerHTML = html
     othersTagFieldDOM.forEach(e => e.innerHTML = "")
     
+    //mettre en dehors de listOfTags...
     currentTagFieldDOM.addEventListener("click", function(e){
         e.stopImmediatePropagation()
         let tagSelected = e.target.closest("p").id
@@ -95,13 +97,8 @@ function listOfTagsDisplay(ListOfTags, currentTagFieldDOM, othersTagFieldDOM){
     })
 }
 
-function removeTag(index){
-    
-    tagsSelected.splice(index, 1)
-    tagsSelectedDisplay()
-    search()
-}
 
+// display tags selected
 
 function tagsSelectedDisplay(){
     const tagsSelectedDOM = document.getElementById("tags-selected")
@@ -115,6 +112,13 @@ function tagsSelectedDisplay(){
     tagsSelectedDOM.innerHTML = html
 }
 
+// remove tags by clicking on the xmark
+function removeTag(index){
+    
+    tagsSelected.splice(index, 1)
+    tagsSelectedDisplay()
+    search()
+}
 
 
 // search function
@@ -127,8 +131,6 @@ function search(){
 
     searchedElements = searchedElementsBar.concat(tagsSelected)
 
-
-    // emptying matching recipes array
     matchingRecipes.length = 0;
 
     // searching in each recipe
