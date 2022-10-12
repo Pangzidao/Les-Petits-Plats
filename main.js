@@ -54,7 +54,7 @@ function searchBar(){
 }
 
 
-// research by tags
+// research by tagsbb
 const searchByTagDOM = document.getElementById("tagSearch")
 
 // event when focus in one of the tags fields
