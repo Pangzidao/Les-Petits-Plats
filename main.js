@@ -43,6 +43,8 @@ let searchedElementsBar = []
 function searchBar(){
     
     let searchString = searchedElementInput.value.toLowerCase().trim()
+
+    console.log(searchString)
     
     if (searchString.length > 2){
         searchedElementsBar = searchString.split(" ");
@@ -145,7 +147,7 @@ function search(){
         // making ingredients list
         recipe.ingredients.forEach(e => listOfIngredients.push(e.ingredient.toLowerCase()))
         recipe.ustensils.forEach(e => listOfUstensils.push(e.toLowerCase()))
-a
+
         // converting ingredient list into a string
         ingredientsString = listOfIngredients.toString()
         ustensilsString = listOfUstensils.toString()
