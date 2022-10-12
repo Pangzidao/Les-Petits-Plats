@@ -38,20 +38,16 @@ searchedElementInput.addEventListener("input", function(){
     searchBar()
 }) 
 
-let searchedElementsBar = []
+let searchString = ""
 
 function searchBar(){
     
-    let searchString = searchedElementInput.value.toLowerCase().trim()
-
-    console.log(searchString)
+    searchString = searchedElementInput.value.toLowerCase().trim()
     
     if (searchString.length > 2){
-        searchedElementsBar = searchString.split(" ");
         search()
     }else{
-        searchedElementsBar =[];
-        search()
+        return
     } 
 }
 
@@ -126,62 +122,17 @@ function removeTag(index){
 // search function
 function search(){
 
-    let matchingRecipes = []
-    let recipesIsMatching = []
-    let searchedElements = []
+    console.log(searchString)
 
-
-    searchedElements = searchedElementsBar.concat(tagsSelected)
-
-    matchingRecipes.length = 0;
-
-    // searching in each recipe
     recipes.forEach(recipe => {
-
-        let listOfIngredients = []
-        let ingredientsString = ""
-
-        let listOfUstensils = []
-        let ustensilsString = []
-
-        // making ingredients list
-        recipe.ingredients.forEach(e => listOfIngredients.push(e.ingredient.toLowerCase()))
-        recipe.ustensils.forEach(e => listOfUstensils.push(e.toLowerCase()))
-
-        // converting ingredient list into a string
-        ingredientsString = listOfIngredients.toString()
-        ustensilsString = listOfUstensils.toString()
-
-
-        // emptying the array of matching recipes ex: [false, true] => []
-        recipesIsMatching.length = 0;
-
-        // creating matching recipe array by comparing search elements and recipe elements
-        searchedElements.forEach(searchedElement =>{
-            if (recipe.name.toLowerCase().includes(searchedElement)
-            ||recipe.description.toLowerCase().includes(searchedElement)
-            ||ingredientsString.includes(searchedElement)
-            ||ustensilsString.includes(searchedElement)
-            ||recipe.appliance.toLowerCase().includes(searchedElement)
-
-
-
-            ){
-                recipesIsMatching.push(true)
-            }else{
-                recipesIsMatching.push(false)
-            }
-        })
-
-        // checking if the matching recipe contain false. If not adding the matching recipe to the matching recipe array
-        if (recipesIsMatching.includes(false)){
-            return
-        }else{
-            matchingRecipes.push(recipe)
+        recipeString = JSON.stringify(recipe)
+        console.log(recipeString)
+        if (recipeString.includes(searchString)){
+            console.log(recipe.name)
         }
     })
-    //console.log(matchingRecipes)
-    recipesDisplay(matchingRecipes)
+
+    //recipesDisplay(matchingRecipes)
 }
 
 
