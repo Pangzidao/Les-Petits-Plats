@@ -12,6 +12,7 @@ header{
     align-items: center;
 }
 
+
 .searchByTagOptions::-webkit-input-placeholder {
     color: white;
   }
@@ -48,7 +49,7 @@ header h1{
 
 #recipes{
     position: absolute;
-    top:250px;
+    top:300px;
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
@@ -57,21 +58,48 @@ header h1{
 }
 
 .tags-display{
-    background-color: aqua;
     display: flex;
     flex-wrap: wrap;
+    margin-left: 22px;
 }
 
 .recipe-card{
     border: solid;
     width: 28%;
     margin: 10px;
-    height:800px;
+    height:500px;
+}
+
+#ingredientTags{
+    background-color: #3282F7;
+}
+#ingredientTags-display{
+    background-color: #3282F7;
+}
+
+#applianceTags{
+    background-color: #68D9A4;
+
+}
+
+#ustensilTags{
+    background-color: #ED6454;
+}
+
+#applianceTags-display{
+    background-color: #68D9A4;
+}
+#ustensilTags-display{
+    background-color: #ED6454;
+}
+
+.tagListElements{
+    color: white;
 }
 
 #tagSearchContainer{
     position: absolute;
-    top:200px;
+    top:220px;
     z-index: 2;
 }
 
@@ -117,4 +145,19 @@ header h1{
 
 .recipe-description{
     width: 50%;
+}
+
+.tagSelected{
+    display: flex;
+    align-items: center;
+    border: solid;
+    padding: 5px;
+}
+
+.tagSelected p{
+    margin: 0px 10px 0px 0px;
+}
+
+.recipe-description{
+    font-size: x-small;
 }
