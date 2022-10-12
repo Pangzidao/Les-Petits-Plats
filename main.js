@@ -145,8 +145,7 @@ function search(){
         // making ingredients list
         recipe.ingredients.forEach(e => listOfIngredients.push(e.ingredient.toLowerCase()))
         recipe.ustensils.forEach(e => listOfUstensils.push(e.toLowerCase()))
-
-
+a
         // converting ingredient list into a string
         ingredientsString = listOfIngredients.toString()
         ustensilsString = listOfUstensils.toString()
