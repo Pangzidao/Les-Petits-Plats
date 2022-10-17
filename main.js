@@ -44,7 +44,6 @@ function searchBar(searchedElementsBar){
     recipesDisplay(matchingRecipes)
 }
 
-
 const searchTagDom = document.getElementById("tagSearch")
 
 searchTagDom.addEventListener("focusin", e => console.log(e.target.id))
