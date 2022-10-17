@@ -1,22 +1,50 @@
-console.log(recipes)
+
+const searchedElementInput = document.getElementById("elementSearched")
+searchedElementInput.addEventListener("input", searchBarInput)
 
 function searchBarInput(){
     
-    let searchString = searchedElementInput.value.toLowerCase().trim()
+    let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
     let searchedElementsBar = []
-
     if (searchString.length > 2){
         searchedElementsBar = searchString.split(" ");
-        search()
+        searchBar(searchedElementsBar)
     }else{
         searchedElementsBar =[];
-        search(searchedElementsBar)
-    } 
+        searchBar(searchedElementsBar)
+    }
 }
 
-function search(searchedElementsBar){
-    console.log(searchedElementsBar)
+function stringLoweredCaseWithoutAccent(string){
+    return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
 }
+
+function getRecipeNameDescriptionIngredientsString(recipe){
+
+    let recipeNameString = stringLoweredCaseWithoutAccent(recipe.name)
+    let recipeDescriptionString = stringLoweredCaseWithoutAccent(recipe.description)
+    let recipeIngredientsArray = []
+    recipe.ingredients.forEach(i => {
+        recipeIngredientsArray.push(stringLoweredCaseWithoutAccent(i.ingredient))
+    })
+    const recipeIngredientString = recipeIngredientsArray.toString();
+    return recipeNameString + " " + recipeDescriptionString + " " + recipeIngredientString;
+}
+
+function searchBar(searchedElementsBar){
+    matchingRecipes = []
+    recipes.forEach(recipe => {
+        let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
+        let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
+        if(recipeIsMatching === true){
+            matchingRecipes.push(recipe)
+        }
+    })
+
+    recipesDisplay(matchingRecipes)
+}
+
+
 
 function recipesDisplay(recipes){
 
