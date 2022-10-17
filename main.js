@@ -1,7 +1,22 @@
 console.log(recipes)
 
+function searchBarInput(){
+    
+    let searchString = searchedElementInput.value.toLowerCase().trim()
+    let searchedElementsBar = []
 
+    if (searchString.length > 2){
+        searchedElementsBar = searchString.split(" ");
+        search()
+    }else{
+        searchedElementsBar =[];
+        search(searchedElementsBar)
+    } 
+}
 
+function search(searchedElementsBar){
+    console.log(searchedElementsBar)
+}
 
 function recipesDisplay(recipes){
 
