@@ -74,11 +74,12 @@ function getTags(matchingRecipes){
 }
 
 const searchTagDom = document.getElementById("tagSearch")
-searchTagDom.addEventListener("focusin", e => selectTagsField(e))
-let tagField = ""
 const searchByTagOptionsDOM = document.getElementsByClassName("tags-display");
+let tagField = ""
 let currentTagFieldDOM = ""
 let othersTagFieldDOM = ""
+
+searchTagDom.addEventListener("focusin", e => selectTagsField(e))
 
 function selectTagsField(e){
     tagField = e.target.id
