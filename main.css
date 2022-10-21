@@ -61,6 +61,7 @@ header h1{
     display: flex;
     flex-wrap: wrap;
     margin-left: 22px;
+    z-index: 2;
 }
 
 .recipe-card{
@@ -73,7 +74,7 @@ header h1{
 #ingredients{
     background-color: #3282F7;
 }
-#ingredientTags-display{
+#ingredients-display{
     background-color: #3282F7;
 }
 
@@ -86,10 +87,10 @@ header h1{
     background-color: #ED6454;
 }
 
-#applianceTags-display{
+#appliance-display{
     background-color: #68D9A4;
 }
-#ustensilTags-display{
+#ustensils-display{
     background-color: #ED6454;
 }
 

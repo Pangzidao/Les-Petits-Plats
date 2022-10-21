@@ -40,14 +40,97 @@ function searchBar(searchedElementsBar){
             matchingRecipes.push(recipe)
         }
     })
-
     recipesDisplay(matchingRecipes)
+    getTags(matchingRecipes)
+    tagDisplay()
+}
+
+function removingDouble(listOfTags){
+    return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
+}
+
+let matchingRecipes = []
+let generalListOfTags = {}
+
+function getTags(matchingRecipes){
+    let ingredientsTagsListWithDouble = []
+    let applianceTagsListWithDouble = []
+    let ustensilsTagsListWithDouble = []
+    matchingRecipes.forEach(recipe =>{
+        recipe.ingredients.forEach(i => ingredientsTagsListWithDouble.push(i.ingredient.toLowerCase()))
+        applianceTagsListWithDouble.push(recipe.appliance.toLowerCase())
+        recipe.ustensils.forEach(ustensil => ustensilsTagsListWithDouble.push(ustensil.toLowerCase()))
+    })
+    let ingredientsTagsList = removingDouble(ingredientsTagsListWithDouble)
+    let applianceTagsList = removingDouble(applianceTagsListWithDouble)
+    let ustensilsTagsList = removingDouble(ustensilsTagsListWithDouble)
+
+    generalListOfTags = {
+        "ingredients":ingredientsTagsList,
+        "appliance":applianceTagsList,
+        "ustensils":ustensilsTagsList
+    }
+
 }
 
 const searchTagDom = document.getElementById("tagSearch")
+searchTagDom.addEventListener("focusin", e => selectTagsField(e))
+let tagField = ""
+const searchByTagOptionsDOM = document.getElementsByClassName("tags-display");
+let currentTagFieldDOM = ""
+let othersTagFieldDOM = ""
 
-searchTagDom.addEventListener("focusin", e => console.log(e.target.id))
+function selectTagsField(e){
+    tagField = e.target.id
+    currentTagFieldDOM = document.getElementById(`${tagField}-display`)
+    othersTagFieldDOM = Array.from(searchByTagOptionsDOM).filter(e => e !== currentTagFieldDOM)
+    tagDisplay()
+}
 
+function tagDisplay(){
+ 
+    let currentListofTags = generalListOfTags[tagField]
+    let html = ""
+    currentListofTags.forEach(tag => html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
+    currentTagFieldDOM.innerHTML = html
+    othersTagFieldDOM.forEach(e => e.innerHTML = "")   
+}
+
+searchTagDom.addEventListener("click", event => tagSelection(event))
+
+const tagsSelected = []
+
+function tagSelection(event){
+    let tagSelected = event.target.closest("p").id
+    tagsSelected.push(tagSelected)
+    tagsSelectedDisplay()
+    trimRecipesByTag()
+}
+
+function tagsSelectedDisplay(){
+    const tagsSelectedDOM = document.getElementById("tags-selected")
+    console.log(tagsSelected)
+    let html=""
+
+    tagsSelected.forEach(function(tag, index) {
+        html += `<div class="tagSelected"><p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i></div>`
+    })
+
+    tagsSelectedDOM.innerHTML = html
+
+
+}
+
+function removeTag(index){
+    
+    tagsSelected.splice(index, 1)
+    tagsSelectedDisplay()
+    search()
+}
+
+function trimRecipesByTag(){
+    console.log(matchingRecipes)
+}
 
 function recipesDisplay(recipes){
 
@@ -100,4 +183,11 @@ function recipesDisplay(recipes){
 
 }
 
-recipesDisplay(recipes)
+function init(){
+    recipesDisplay(recipes)
+    matchingRecipes = recipes
+    getTags(matchingRecipes)
+}
+
+
+init()
