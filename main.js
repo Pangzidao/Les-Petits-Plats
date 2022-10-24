@@ -1,5 +1,7 @@
 
 const searchedElementInput = document.getElementById("elementSearched")
+
+
 searchedElementInput.addEventListener("input", searchBarInput)
 
 function searchBarInput(){
@@ -49,7 +51,7 @@ function removingDouble(listOfTags){
     return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
 }
 
-let matchingRecipes = []
+let matchingRecipes = recipes
 let generalListOfTags = {}
 
 function getTags(matchingRecipes){
@@ -75,9 +77,9 @@ function getTags(matchingRecipes){
 
 const searchTagDom = document.getElementById("tagSearch")
 const searchByTagOptionsDOM = document.getElementsByClassName("tags-display");
-let tagField = ""
-let currentTagFieldDOM = ""
-let othersTagFieldDOM = ""
+let tagField = "ingredients"
+let currentTagFieldDOM = document.getElementById(`${tagField}-display`)
+let othersTagFieldDOM = Array.from(searchByTagOptionsDOM).filter(e => e !== currentTagFieldDOM)
 
 searchTagDom.addEventListener("focusin", e => selectTagsField(e))
 
@@ -90,18 +92,20 @@ function selectTagsField(e){
 
 function tagDisplay(){
  
-    let currentListofTags = generalListOfTags[tagField]
+    let currentListOfTags = generalListOfTags[tagField]
+    console.log(currentListOfTags)
     let html = ""
-    currentListofTags.forEach(tag => html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
+    currentListOfTags.forEach(tag => html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
     currentTagFieldDOM.innerHTML = html
     othersTagFieldDOM.forEach(e => e.innerHTML = "")   
 }
 
 searchTagDom.addEventListener("click", event => tagSelection(event))
 
-const tagsSelected = []
+let tagsSelected = []
 
 function tagSelection(event){
+    console.log(event)
     let tagSelected = event.target.closest("p").id
     tagsSelected.push(tagSelected)
     tagsSelectedDisplay()
@@ -126,12 +130,40 @@ function removeTag(index){
     
     tagsSelected.splice(index, 1)
     tagsSelectedDisplay()
-    search()
+}
+
+function getRecipeIngredientsApplianceUstensilsString(recipe){
+    console.log(matchingRecipes)
+    console.log(recipe.appliance)
+
+    let recipeApplianceString = stringLoweredCaseWithoutAccent(recipe.appliance)
+    let recipeUstensilsArray = []
+    recipe.ustensils.forEach(u => {
+        recipeUstensilsArray.push(stringLoweredCaseWithoutAccent(u))
+    })
+    const recipeUstensilsString = recipeUstensilsArray.toString();
+    let recipeIngredientsArray = []
+    recipe.ingredients.forEach(i => {
+        recipeIngredientsArray.push(stringLoweredCaseWithoutAccent(i.ingredient))
+    })
+    const recipeIngredientString = recipeIngredientsArray.toString();
+    return recipeApplianceString + " " + recipeUstensilsString + " " + recipeIngredientString;
 }
 
 function trimRecipesByTag(){
-    console.log(matchingRecipes)
+
+    recipes.forEach(recipe => {
+        let recipeIngredientsApplianceUstensilsString = getRecipeIngredientsApplianceUstensilsString(recipe)
+        let recipeIsMatching = tagsSelected.every(element => recipeIngredientsApplianceUstensilsString.includes(element))
+        if(recipeIsMatching === true){
+            matchingRecipes.push(recipe)
+        }
+    })
+    recipesDisplay(matchingRecipes)
+    getTags(matchingRecipes)
+    tagDisplay()
 }
+
 
 function recipesDisplay(recipes){
 
