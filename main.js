@@ -1,12 +1,17 @@
 let matchingRecipes = recipes
 let matchingIds = []
+let tagsSelected = []
+
 
 function init(){
+    getTags(matchingRecipes)
     recipesDisplay(matchingRecipes)
+
 }
 
 function update(){
-    filterRecipes()
+    getTags(matchingRecipes)
+    tagsSelectedDisplay()
     tagsDisplay()
     recipesDisplay(matchingRecipes)
 }
@@ -58,6 +63,7 @@ function searchBar(searchedElementsBar){
             matchingIds.push(recipe.id)
         }
     })
+    filterRecipes()
     update()
 }
 
@@ -77,9 +83,31 @@ function getTags(matchingRecipes){
         return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
     }
 
-    let ingredientsTagsList = removingDouble(ingredientsTagsListWithDouble)
-    let applianceTagsList = removingDouble(applianceTagsListWithDouble)
-    let ustensilsTagsList = removingDouble(ustensilsTagsListWithDouble)
+    let completeIngredientsTagsList = removingDouble(ingredientsTagsListWithDouble)
+    let completeApplianceTagsList = removingDouble(applianceTagsListWithDouble)
+    let completeUstensilsTagsList = removingDouble(ustensilsTagsListWithDouble)
+
+    let ingredientsTagsList = []
+    let applianceTagsList = []
+    let ustensilsTagsList = []
+
+    completeIngredientsTagsList.forEach(ingredient => {
+        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(ingredient))){
+            ingredientsTagsList.push(ingredient)
+        }
+    })
+
+    completeApplianceTagsList.forEach(appliance => {
+        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(appliance))){
+            applianceTagsList.push(appliance)
+        }
+    })
+
+    completeUstensilsTagsList.forEach(ustensil => {
+        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(ustensil))){
+            ustensilsTagsList.push(ustensil)
+        }
+    })
 
     generalListOfTags = {
         "ingredients":ingredientsTagsList,
@@ -94,9 +122,8 @@ const ustensilsTagsDisplay = document.getElementById("ustensils-display")
 
 
 function tagsDisplay(){
-    getTags(matchingRecipes)
     let ingredientsHtml = ""
-    generalListOfTags.ingredients.forEach(ingredient => 
+    generalListOfTags.ingredients.forEach(ingredient =>
         ingredientsHtml += `<p class="tagListElements" id="${ingredient}" onclick="selectTag(id)">${ingredient}</p>`
         )
 
@@ -147,15 +174,45 @@ function openTagsField(e){
     }
     tagField = e.target.id;
     tagsFieldOpened[tagField] = true
-    tagsDisplay()
+    update()
 }
-
-
 
 function selectTag(tag){
-    console.log(tag)
+    tag = stringLoweredCaseWithoutAccent(tag)
+    tagsSelected.push(tag)
+    filterByTag()
+    update()
 }
 
+function tagsSelectedDisplay(){
+    const tagsSelectedDOM = document.getElementById("tags-selected")
+    let html=""
+    tagsSelected.forEach(function(tag, index) {
+        html += `<div class="tagSelected"><p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i></div>`
+    })
+    tagsSelectedDOM.innerHTML = html
+}
+
+function removeTag(index){  
+    tagsSelected.splice(index, 1)
+    filterByTag()
+    update()
+}
+
+function filterByTag(){
+    console.log(tagsSelected)
+    let recipeIngredientsApplianceUstensilsArray = []
+    matchingRecipes.forEach(recipe =>{
+        recipeIngredientsApplianceUstensilsArray = []
+        recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
+        recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
+        recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
+        let recipeIsMatching = tagsSelected.every(tag => recipeIngredientsApplianceUstensilsArray.includes(tag))
+        if(recipeIsMatching === true){
+            console.log(recipe.id)
+        }
+    })
+}
 
 
 function recipesDisplay(recipes){
