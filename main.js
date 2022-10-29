@@ -4,20 +4,20 @@ let tagsSelected = []
 
 
 function init(){
+    recipes.forEach(recipe => matchingIds.push(recipe.id))
     getTags(matchingRecipes)
     recipesDisplay(matchingRecipes)
-
 }
 
 function update(){
     getTags(matchingRecipes)
-    tagsSelectedDisplay()
-    tagsDisplay()
     recipesDisplay(matchingRecipes)
+    tagsDisplay()
+    tagsSelectedDisplay()
 }
 
-function filterRecipes(){
-    matchingRecipes = recipes.filter(recipe => matchingIds.includes(recipe.id))
+function filterRecipes(ids){
+    matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
 }
 
 const searchedElementInput = document.getElementById("elementSearched")
@@ -55,15 +55,16 @@ function getRecipeNameDescriptionIngredientsString(recipe){
 }
 
 function searchBar(searchedElementsBar){
-    matchingIds = []
+    let searchBarMatchingIds = []
     recipes.forEach(recipe => {
         let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
         let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
         if(recipeIsMatching === true){
-            matchingIds.push(recipe.id)
+            searchBarMatchingIds.push(recipe.id)
         }
     })
-    filterRecipes()
+
+    filterRecipes(searchBarMatchingIds)
     update()
 }
 
@@ -174,8 +175,19 @@ function openTagsField(e){
     }
     tagField = e.target.id;
     tagsFieldOpened[tagField] = true
+    let currentTagFieldDom = e.target
+    filterByTagInput(currentTagFieldDom)
     update()
 }
+
+function filterByTagInput(currentTagFieldDom){
+    currentTagFieldDom.addEventListener("input", function(){
+        generalListOfTags[currentTagFieldDom.id] = generalListOfTags[currentTagFieldDom.id].filter(tag => tag.includes(currentTagFieldDom.value))
+        tagsDisplay()
+    })
+}
+
+
 
 function selectTag(tag){
     tag = stringLoweredCaseWithoutAccent(tag)
@@ -200,18 +212,20 @@ function removeTag(index){
 }
 
 function filterByTag(){
-    console.log(tagsSelected)
     let recipeIngredientsApplianceUstensilsArray = []
+    let filterByTagMatchingIds = []
     matchingRecipes.forEach(recipe =>{
         recipeIngredientsApplianceUstensilsArray = []
         recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
         recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
         recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
+        console.log(tagsSelected)
         let recipeIsMatching = tagsSelected.every(tag => recipeIngredientsApplianceUstensilsArray.includes(tag))
         if(recipeIsMatching === true){
-            console.log(recipe.id)
+            filterByTagMatchingIds.push(recipe.id)
         }
     })
+    filterRecipes(filterByTagMatchingIds)
 }
 
 
@@ -268,256 +282,3 @@ function recipesDisplay(recipes){
 
 init()
 
-
-/*
-
-données de départ => recipes
-
-données à afficher => matchingRecipes
-
-fonction filterRecipes:
-
-je récupère l'id de matchingRecipes et filter les recipes grace à cela
-j'actualise recipesDisplay
-
-fonction searchBar:
-
-get the input of the search bar
-see if it match description, name or ingredients list
-if it match add the recipe.id in matchingIds
-
-fonction tags:
-select the tags based on the current matchingRecipes
-
-fonction tagsDisplay:
-on focusin => display the tags of the current tagsfield
-
-
-
-
-const searchedElementInput = document.getElementById("elementSearched")
-
-
-searchedElementInput.addEventListener("input", searchBarInput)
-
-function searchBarInput(){
-    
-    let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
-    let searchedElementsBar = []
-    if (searchString.length > 2){
-        searchedElementsBar = searchString.split(" ");
-        searchBar(searchedElementsBar)
-    }else{
-        searchedElementsBar =[];
-        searchBar(searchedElementsBar)
-    }
-}
-
-function stringLoweredCaseWithoutAccent(string){
-    return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
-}
-
-function getRecipeNameDescriptionIngredientsString(recipe){
-
-    let recipeNameString = stringLoweredCaseWithoutAccent(recipe.name)
-    let recipeDescriptionString = stringLoweredCaseWithoutAccent(recipe.description)
-    let recipeIngredientsArray = []
-    recipe.ingredients.forEach(i => {
-        recipeIngredientsArray.push(stringLoweredCaseWithoutAccent(i.ingredient))
-    })
-    const recipeIngredientString = recipeIngredientsArray.toString();
-    return recipeNameString + " " + recipeDescriptionString + " " + recipeIngredientString;
-}
-
-function searchBar(searchedElementsBar){
-    matchingRecipes = []
-    recipes.forEach(recipe => {
-        let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
-        let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
-        if(recipeIsMatching === true){
-            matchingRecipes.push(recipe)
-        }
-    })
-    recipesDisplay(matchingRecipes)
-    getTags(matchingRecipes)
-    tagDisplay()
-}
-
-function removingDouble(listOfTags){
-    return listOfTags.filter((tag, index) => listOfTags.indexOf(tag) === index);
-}
-
-let generalListOfTags = {}
-
-function getTags(matchingRecipes){
-    let ingredientsTagsListWithDouble = []
-    let applianceTagsListWithDouble = []
-    let ustensilsTagsListWithDouble = []
-    matchingRecipes.forEach(recipe =>{
-        recipe.ingredients.forEach(i => ingredientsTagsListWithDouble.push(i.ingredient.toLowerCase()))
-        applianceTagsListWithDouble.push(recipe.appliance.toLowerCase())
-        recipe.ustensils.forEach(ustensil => ustensilsTagsListWithDouble.push(ustensil.toLowerCase()))
-    })
-    let ingredientsTagsList = removingDouble(ingredientsTagsListWithDouble)
-    let applianceTagsList = removingDouble(applianceTagsListWithDouble)
-    let ustensilsTagsList = removingDouble(ustensilsTagsListWithDouble)
-
-    generalListOfTags = {
-        "ingredients":ingredientsTagsList,
-        "appliance":applianceTagsList,
-        "ustensils":ustensilsTagsList
-    }
-
-}
-
-const searchTagDom = document.getElementById("tagSearch")
-const searchByTagOptionsDOM = document.getElementsByClassName("tags-display");
-let tagField = "ingredients"
-let currentTagFieldDOM = document.getElementById(`${tagField}-display`)
-let othersTagFieldDOM = Array.from(searchByTagOptionsDOM).filter(e => e !== currentTagFieldDOM)
-
-searchTagDom.addEventListener("focusin", e => selectTagsField(e))
-
-function selectTagsField(e){
-    tagField = e.target.id
-    currentTagFieldDOM = document.getElementById(`${tagField}-display`)
-    othersTagFieldDOM = Array.from(searchByTagOptionsDOM).filter(e => e !== currentTagFieldDOM)
-    tagDisplay()
-}
-
-function tagDisplay(){
- 
-    let currentListOfTags = generalListOfTags[tagField]
-    console.log(currentListOfTags)
-    let html = ""
-    currentListOfTags.forEach(tag => html += `<p class="tagListElements" id="${tag}">${tag}</p>`)
-    currentTagFieldDOM.innerHTML = html
-    othersTagFieldDOM.forEach(e => e.innerHTML = "")   
-}
-
-searchTagDom.addEventListener("click", event => tagSelection(event))
-
-let tagsSelected = []
-
-function tagSelection(event){
-    console.log(event)
-    let tagSelected = event.target.closest("p").id
-    tagsSelected.push(tagSelected)
-    tagsSelectedDisplay()
-    trimRecipesByTag()
-}
-
-function tagsSelectedDisplay(){
-    const tagsSelectedDOM = document.getElementById("tags-selected")
-    console.log(tagsSelected)
-    let html=""
-
-    tagsSelected.forEach(function(tag, index) {
-        html += `<div class="tagSelected"><p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i></div>`
-    })
-
-    tagsSelectedDOM.innerHTML = html
-
-
-}
-
-function removeTag(index){
-    
-    tagsSelected.splice(index, 1)
-    tagsSelectedDisplay()
-}
-
-function getRecipeIngredientsApplianceUstensilsString(recipe){
-    console.log(matchingRecipes)
-    console.log(recipe.appliance)
-
-    let recipeApplianceString = stringLoweredCaseWithoutAccent(recipe.appliance)
-    let recipeUstensilsArray = []
-    recipe.ustensils.forEach(u => {
-        recipeUstensilsArray.push(stringLoweredCaseWithoutAccent(u))
-    })
-    const recipeUstensilsString = recipeUstensilsArray.toString();
-    let recipeIngredientsArray = []
-    recipe.ingredients.forEach(i => {
-        recipeIngredientsArray.push(stringLoweredCaseWithoutAccent(i.ingredient))
-    })
-    const recipeIngredientString = recipeIngredientsArray.toString();
-    return recipeApplianceString + " " + recipeUstensilsString + " " + recipeIngredientString;
-}
-
-function trimRecipesByTag(){
-
-    recipes.forEach(recipe => {
-        let recipeIngredientsApplianceUstensilsString = getRecipeIngredientsApplianceUstensilsString(recipe)
-        let recipeIsMatching = tagsSelected.every(element => recipeIngredientsApplianceUstensilsString.includes(element))
-        if(recipeIsMatching === true){
-            matchingRecipes.push(recipe)
-        }
-    })
-    recipesDisplay(matchingRecipes)
-    getTags(matchingRecipes)
-    tagDisplay()
-}
-
-
-function recipesDisplay(recipes){
-
-    const recipesSection = document.getElementById("recipes");
-    
-    let html = ""
-
-    recipes.forEach(recipe =>{
-        
-        let ingredientHtml = ""
-
-        recipe.ingredients.forEach(i => {
-            if("quantity" in i === false){
-                ingredientHtml +=`
-            <p>${i.ingredient}</p>
-            `
-            }else if("unit" in i === false){
-                ingredientHtml +=`
-            <p>${i.ingredient}: ${i.quantity}</p>
-            `                  
-            }else{
-                ingredientHtml += `
-                <p>${i.ingredient}: ${i.quantity} ${i.unit}</p>
-                `  
-            } 
-        })
-
-        html += `
-            <div class="recipe-card">
-                <div class="photo-holder"></div>
-                <div class="recipe-text">
-                    <div class="recipe-header">
-                        <h2>${recipe.name}</h2>
-                        <p class="recipe-time"><i class="fa-regular fa-clock"></i>${recipe.time} min</p>
-                    </div>
-
-                    <div class="recipe-main-text">
-                        <div class="ingredients-list">${ingredientHtml}</div>
-                        <p class="recipe-description">${recipe.description}</p>
-                    </div>
-
-                    
-                </div>
-
-            </div>
-        `
-    })
-
-    recipesSection.innerHTML = html
-
-}
-
-function init(){
-    recipesDisplay(recipes)
-    matchingRecipes = recipes
-    getTags(matchingRecipes)
-}
-
-
-init()
-
-*/
