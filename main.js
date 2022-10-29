@@ -5,13 +5,12 @@ let tagsSelected = []
 
 function init(){
     recipes.forEach(recipe => matchingIds.push(recipe.id))
-    getTags(matchingRecipes)
     recipesDisplay(matchingRecipes)
 }
 
 function update(){
-    getTags(matchingRecipes)
     recipesDisplay(matchingRecipes)
+    getTags(matchingRecipes)
     tagsDisplay()
     tagsSelectedDisplay()
 }
@@ -219,7 +218,6 @@ function filterByTag(){
         recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
         recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
         recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
-        console.log(tagsSelected)
         let recipeIsMatching = tagsSelected.every(tag => recipeIngredientsApplianceUstensilsArray.includes(tag))
         if(recipeIsMatching === true){
             filterByTagMatchingIds.push(recipe.id)
