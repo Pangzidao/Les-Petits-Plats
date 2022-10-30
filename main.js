@@ -6,6 +6,7 @@ let tagsSelected = []
 function init(){
     recipes.forEach(recipe => matchingIds.push(recipe.id))
     recipesDisplay(matchingRecipes)
+    getTags(recipes)
 }
 
 function update(){
@@ -24,10 +25,11 @@ const searchedElementInput = document.getElementById("elementSearched")
 
 searchedElementInput.addEventListener("input", searchBarInput)
 
+let searchedElementsBar = []
+
 function searchBarInput(){
     
     let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
-    let searchedElementsBar = []
     if (searchString.length > 2){
         searchedElementsBar = searchString.split(" ");
         searchBar(searchedElementsBar)
@@ -179,9 +181,12 @@ function openTagsField(e){
     update()
 }
 
+let tagSearchInput = ""
+
 function filterByTagInput(currentTagFieldDom){
     currentTagFieldDom.addEventListener("input", function(){
-        generalListOfTags[currentTagFieldDom.id] = generalListOfTags[currentTagFieldDom.id].filter(tag => tag.includes(currentTagFieldDom.value))
+        tagSearchInput = currentTagFieldDom.value;
+        generalListOfTags[currentTagFieldDom.id] = generalListOfTags[currentTagFieldDom.id].filter(tag => tag.includes(tagSearchInput))
         tagsDisplay()
     })
 }
@@ -213,7 +218,7 @@ function removeTag(index){
 function filterByTag(){
     let recipeIngredientsApplianceUstensilsArray = []
     let filterByTagMatchingIds = []
-    matchingRecipes.forEach(recipe =>{
+    recipes.forEach(recipe =>{
         recipeIngredientsApplianceUstensilsArray = []
         recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
         recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
