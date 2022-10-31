@@ -232,12 +232,15 @@ function removeTag(index){
 function filterByTag(){
     let recipeIngredientsApplianceUstensilsArray = []
     let filterByTagMatchingIds = []
+    let tags = []
+    tagsSelected.forEach(tag => tags.push(tag.tag))
+    console.log(tags)
     recipes.forEach(recipe =>{
         recipeIngredientsApplianceUstensilsArray = []
         recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
         recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
         recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
-        let recipeIsMatching = tagsSelected.every((tag) => recipeIngredientsApplianceUstensilsArray.includes(tag))
+        let recipeIsMatching = tags.every((tag) => recipeIngredientsApplianceUstensilsArray.includes(tag))
         if(recipeIsMatching === true){
             filterByTagMatchingIds.push(recipe.id)
         }
