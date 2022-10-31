@@ -1,34 +1,24 @@
-let matchingRecipes = recipes
-let matchingIds = []
-let tagsSelected = []
+let matchingRecipes = []
+let itemsSearched = []
 
+function stringLoweredCaseWithoutAccent(string){
+    return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
+}
 
 function init(){
-    recipes.forEach(recipe => matchingIds.push(recipe.id))
-    recipesDisplay(matchingRecipes)
-    getTags(recipes)
+    recipesDisplay(recipes)
 }
 
 function update(){
     recipesDisplay(matchingRecipes)
-    getTags(matchingRecipes)
-    tagsDisplay()
-    tagsSelectedDisplay()
-}
-
-function filterRecipes(ids){
-    matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
 }
 
 const searchedElementInput = document.getElementById("elementSearched")
 
 searchedElementInput.addEventListener("input", searchBarInput)
 
-let searchedElementsBar = []
-
-// Provide input from the search bar if input is at least 3 characters
 function searchBarInput(){
-    
+    let searchedElementsBar = []
     let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
     if (searchString.length > 2){
         searchedElementsBar = searchString.split(" ");
@@ -39,9 +29,81 @@ function searchBarInput(){
     }
 }
 
-function stringLoweredCaseWithoutAccent(string){
-    return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
+function getRecipeNameIngredientsDescriptionString(recipe){
+    let recipeIngredientsArray = []
+    recipe.ingredients.forEach(i => {
+        recipeIngredientsArray.push(i.ingredient)
+    })
+    const recipeIngredientString = recipeIngredientsArray.toString();
+    return stringLoweredCaseWithoutAccent(recipe.name + " " + recipe.description + " " + recipeIngredientString)
 }
+
+function searchBar(searchedElementsBar){
+    let searchBarMatchingIds = []
+    recipes.forEach(recipe => {
+        let elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
+        let recipeIsMatching = searchedElementsBar.every(element => elementsSearched.includes(element))
+        if(recipeIsMatching === true){
+            searchBarMatchingIds.push(recipe.id)
+        }
+    })
+    filterRecipes(searchBarMatchingIds)
+}
+
+function filterRecipes(ids){
+    matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
+    update()
+}
+
+/*
+function searchBar(searchedElementsBar){
+    console.log(searchedElementsBar)
+    let searchBarMatchingIds = []
+    recipes.forEach(recipe => {
+        let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
+        let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
+        if(recipeIsMatching === true){
+            searchBarMatchingIds.push(recipe.id)
+        }
+    })
+
+    filterRecipes(searchBarMatchingIds)
+    update()
+}
+
+
+
+
+//let matchingIds = []
+//let tagsSelected = []
+
+
+function init(){
+    //recipes.forEach(recipe => matchingIds.push(recipe.id))
+    recipesDisplay(recipes)
+    //getTags(recipes)
+}
+/*
+function update(){
+    recipesDisplay(matchingRecipes)
+    getTags(matchingRecipes)
+    tagsDisplay()
+    tagsSelectedDisplay()
+}
+*/
+/*
+function filterRecipes(ids){
+    matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
+}
+*/
+/*
+
+
+let searchedElementsBar = []
+
+// Provide input from the search bar if input is at least 3 characters
+
+
 
 function getRecipeNameDescriptionIngredientsString(recipe){
 
@@ -56,19 +118,7 @@ function getRecipeNameDescriptionIngredientsString(recipe){
 }
 
 // filter recipes based on search bar input
-function searchBar(searchedElementsBar){
-    let searchBarMatchingIds = []
-    recipes.forEach(recipe => {
-        let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
-        let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
-        if(recipeIsMatching === true){
-            searchBarMatchingIds.push(recipe.id)
-        }
-    })
 
-    filterRecipes(searchBarMatchingIds)
-    update()
-}
 
 let generalListOfTags = {}
 
@@ -247,7 +297,7 @@ function filterByTag(){
     })
     filterRecipes(filterByTagMatchingIds)
 }
-
+*/
 
 function recipesDisplay(recipes){
 
