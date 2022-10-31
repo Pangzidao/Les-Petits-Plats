@@ -17,6 +17,18 @@ header{
     color: white;
   }
 
+.ingredient{
+    background-color: #3282F7;
+}
+
+.appliance{
+    background-color: #68D9A4;
+}
+
+.ustensils{
+    background-color: #ED6454;
+}
+
 header img{
     width: 50px;
 }

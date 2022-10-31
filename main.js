@@ -22,11 +22,11 @@ function filterRecipes(ids){
 
 const searchedElementInput = document.getElementById("elementSearched")
 
-
 searchedElementInput.addEventListener("input", searchBarInput)
 
 let searchedElementsBar = []
 
+// Provide input from the search bar if input is at least 3 characters
 function searchBarInput(){
     
     let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
@@ -55,6 +55,7 @@ function getRecipeNameDescriptionIngredientsString(recipe){
     return recipeNameString + " " + recipeDescriptionString + " " + recipeIngredientString;
 }
 
+// filter recipes based on search bar input
 function searchBar(searchedElementsBar){
     let searchBarMatchingIds = []
     recipes.forEach(recipe => {
@@ -71,6 +72,7 @@ function searchBar(searchedElementsBar){
 
 let generalListOfTags = {}
 
+// get tags that are include in the matching recipes
 function getTags(matchingRecipes){
     let ingredientsTagsListWithDouble = []
     let applianceTagsListWithDouble = []
@@ -116,13 +118,14 @@ function getTags(matchingRecipes){
         "appliances":applianceTagsList,
         "ustensils":ustensilsTagsList
     }
+
 }
 
 const ingredientsTagsDisplay = document.getElementById("ingredients-display")
 const appliancesTagsDisplay = document.getElementById("appliances-display")
 const ustensilsTagsDisplay = document.getElementById("ustensils-display")
 
-
+// display the tags
 function tagsDisplay(){
     let ingredientsHtml = ""
     generalListOfTags.ingredients.forEach(ingredient =>
@@ -181,6 +184,7 @@ function openTagsField(e){
     update()
 }
 
+
 let tagSearchInput = ""
 
 function filterByTagInput(currentTagFieldDom){
@@ -195,7 +199,13 @@ function filterByTagInput(currentTagFieldDom){
 
 function selectTag(tag){
     tag = stringLoweredCaseWithoutAccent(tag)
-    tagsSelected.push(tag)
+    let tagType = ""
+    if (generalListOfTags.ingredients.includes(tag)){tagType = "ingredient"}
+    if (generalListOfTags.appliances.includes(tag)){tagType = "appliance"}
+    if (generalListOfTags.ustensils.includes(tag)){tagType = "ustensils"}
+    console.log(tagType)
+    tagsSelected.push({tag: tag, tagType : tagType})
+    console.log(tagsSelected)
     filterByTag()
     update()
 }
@@ -203,9 +213,13 @@ function selectTag(tag){
 function tagsSelectedDisplay(){
     const tagsSelectedDOM = document.getElementById("tags-selected")
     let html=""
+    console.log(tagsSelected)
     tagsSelected.forEach(function(tag, index) {
-        html += `<div class="tagSelected"><p>${tag}</p><i class="fa-solid fa-xmark" onclick="removeTag('${index}')"></i></div>`
+
+        html += `<div class="tagSelected ${tag.tagType}"><p>${tag.tag}</p><i class="fa-solid fa-xmark " onclick="removeTag('${index}')"></i></div>`
+        
     })
+    console.log(tagsSelected)
     tagsSelectedDOM.innerHTML = html
 }
 
@@ -223,7 +237,7 @@ function filterByTag(){
         recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
         recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
         recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
-        let recipeIsMatching = tagsSelected.every(tag => recipeIngredientsApplianceUstensilsArray.includes(tag))
+        let recipeIsMatching = tagsSelected.every((tag) => recipeIngredientsApplianceUstensilsArray.includes(tag))
         if(recipeIsMatching === true){
             filterByTagMatchingIds.push(recipe.id)
         }
