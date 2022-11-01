@@ -12,10 +12,17 @@ header{
     align-items: center;
 }
 
+.searchByTagOptions{
+    color:white;
+}
 
 .searchByTagOptions::-webkit-input-placeholder {
     color: white;
   }
+
+.searchByTagOptions:focus::-webkit-input-placeholder {
+    color: transparent;
+}
 
 .ingredient{
     background-color: #3282F7;
@@ -163,12 +170,17 @@ header h1{
 .tagSelected{
     display: flex;
     align-items: center;
-    border: solid;
     padding: 5px;
 }
 
 .tagSelected p{
     margin: 0px 10px 0px 0px;
+    color:white;
+
+}
+
+.tagSelected i{
+    color: white;
 }
 
 .recipe-description{

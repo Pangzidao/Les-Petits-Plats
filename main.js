@@ -87,20 +87,24 @@ function getTags(matchingRecipes){
     let applianceTagsList = []
     let ustensilsTagsList = []
 
+    let listOfTagsSelected = []
+
+    tagsSelected.forEach(tag => listOfTagsSelected.push(stringLoweredCaseWithoutAccent(tag.tag)))
+
     completeIngredientsTagsList.forEach(ingredient => {
-        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(ingredient))){
+        if (!listOfTagsSelected.includes(stringLoweredCaseWithoutAccent(ingredient))){
             ingredientsTagsList.push(ingredient)
         }
     })
 
     completeApplianceTagsList.forEach(appliance => {
-        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(appliance))){
+        if (!listOfTagsSelected.includes(stringLoweredCaseWithoutAccent(appliance))){
             applianceTagsList.push(appliance)
         }
     })
 
     completeUstensilsTagsList.forEach(ustensil => {
-        if (!tagsSelected.includes(stringLoweredCaseWithoutAccent(ustensil))){
+        if (!listOfTagsSelected.includes(stringLoweredCaseWithoutAccent(ustensil))){
             ustensilsTagsList.push(ustensil)
         }
     })
@@ -115,6 +119,8 @@ function getTags(matchingRecipes){
 searchTagDom.addEventListener("focusin", e => openTagsField(e))
 
 function openTagsField(e){
+
+
     tagsFieldOpened = {
         "ingredients":false,
         "appliances":false,
@@ -122,6 +128,21 @@ function openTagsField(e){
     }
     let tagField = e.target.id;
     tagsFieldOpened[tagField] = true
+    tagsDisplay()
+}
+
+
+function closeTagsField(){
+    tagsFieldOpened = {
+        "ingredients":false,
+        "appliances":false,
+        "ustensils":false
+    }
+    
+    let inputs = document.getElementsByClassName("searchByTagOptions")
+    inputs = [... inputs]
+    inputs.forEach(input => input.value = "")
+
     tagsDisplay()
 }
 
@@ -159,49 +180,52 @@ function tagsDisplay(){
     }
 }
 
+searchTagDom.addEventListener("input", e => tagSearchInput(e.target))
+
+let currentInputValue = ""
+
 function tagSearchInput(dom){
     getTags(matchingRecipes)
-    let currentInputValue = dom.value
+    currentInputValue = dom.value
     generalListOfTags[dom.id] = generalListOfTags[dom.id].filter(tag => stringLoweredCaseWithoutAccent(tag).includes(stringLoweredCaseWithoutAccent(currentInputValue)))
     tagsDisplay()
 }
 
+
 function selectTag(tag){
-    tag = stringLoweredCaseWithoutAccent(tag)
-}
-/*
-function selectTag(tag){
-    tag = stringLoweredCaseWithoutAccent(tag)
     let tagType = ""
     if (generalListOfTags.ingredients.includes(tag)){tagType = "ingredient"}
     if (generalListOfTags.appliances.includes(tag)){tagType = "appliance"}
     if (generalListOfTags.ustensils.includes(tag)){tagType = "ustensils"}
-    console.log(tagType)
     tagsSelected.push({tag: tag, tagType : tagType})
-    console.log(tagsSelected)
-    filterByTag()
+    //filterByTag()
+    //update()
+    tagsSelectedDisplay()
+    closeTagsField()
     update()
 }
+
+
 
 function tagsSelectedDisplay(){
     const tagsSelectedDOM = document.getElementById("tags-selected")
     let html=""
-    console.log(tagsSelected)
     tagsSelected.forEach(function(tag, index) {
 
         html += `<div class="tagSelected ${tag.tagType}"><p>${tag.tag}</p><i class="fa-solid fa-xmark " onclick="removeTag('${index}')"></i></div>`
         
     })
-    console.log(tagsSelected)
     tagsSelectedDOM.innerHTML = html
 }
 
 function removeTag(index){  
     tagsSelected.splice(index, 1)
-    filterByTag()
+    //filterByTag()
+    tagsSelectedDisplay()
+    closeTagsField()
     update()
 }
-
+/*
 function filterByTag(){
     let recipeIngredientsApplianceUstensilsArray = []
     let filterByTagMatchingIds = []
