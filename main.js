@@ -1,5 +1,4 @@
 let matchingRecipes = []
-let itemsSearched = []
 
 function stringLoweredCaseWithoutAccent(string){
     return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
