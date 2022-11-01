@@ -1,4 +1,12 @@
-let matchingRecipes = []
+let matchingRecipes = recipes
+let generalListOfTags = {}
+let tagsSelected = []
+let tagsFieldOpened = {}
+
+const ingredientsTagsDisplay = document.getElementById("ingredients-display")
+const appliancesTagsDisplay = document.getElementById("appliances-display")
+const ustensilsTagsDisplay = document.getElementById("ustensils-display")
+const searchTagDom = document.getElementById("tagSearch")
 
 function stringLoweredCaseWithoutAccent(string){
     return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "")
@@ -6,10 +14,13 @@ function stringLoweredCaseWithoutAccent(string){
 
 function init(){
     recipesDisplay(recipes)
+    getTags(recipes)
 }
 
 function update(){
     recipesDisplay(matchingRecipes)
+    getTags(matchingRecipes)
+    tagsDisplay()
 }
 
 const searchedElementInput = document.getElementById("elementSearched")
@@ -54,82 +65,14 @@ function filterRecipes(ids){
     update()
 }
 
-/*
-function searchBar(searchedElementsBar){
-    console.log(searchedElementsBar)
-    let searchBarMatchingIds = []
-    recipes.forEach(recipe => {
-        let recipeNameDescriptionIngredientsString = getRecipeNameDescriptionIngredientsString(recipe)
-        let recipeIsMatching = searchedElementsBar.every(element => recipeNameDescriptionIngredientsString.includes(element))
-        if(recipeIsMatching === true){
-            searchBarMatchingIds.push(recipe.id)
-        }
-    })
-
-    filterRecipes(searchBarMatchingIds)
-    update()
-}
-
-
-
-
-//let matchingIds = []
-//let tagsSelected = []
-
-
-function init(){
-    //recipes.forEach(recipe => matchingIds.push(recipe.id))
-    recipesDisplay(recipes)
-    //getTags(recipes)
-}
-/*
-function update(){
-    recipesDisplay(matchingRecipes)
-    getTags(matchingRecipes)
-    tagsDisplay()
-    tagsSelectedDisplay()
-}
-*/
-/*
-function filterRecipes(ids){
-    matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
-}
-*/
-/*
-
-
-let searchedElementsBar = []
-
-// Provide input from the search bar if input is at least 3 characters
-
-
-
-function getRecipeNameDescriptionIngredientsString(recipe){
-
-    let recipeNameString = stringLoweredCaseWithoutAccent(recipe.name)
-    let recipeDescriptionString = stringLoweredCaseWithoutAccent(recipe.description)
-    let recipeIngredientsArray = []
-    recipe.ingredients.forEach(i => {
-        recipeIngredientsArray.push(stringLoweredCaseWithoutAccent(i.ingredient))
-    })
-    const recipeIngredientString = recipeIngredientsArray.toString();
-    return recipeNameString + " " + recipeDescriptionString + " " + recipeIngredientString;
-}
-
-// filter recipes based on search bar input
-
-
-let generalListOfTags = {}
-
-// get tags that are include in the matching recipes
 function getTags(matchingRecipes){
     let ingredientsTagsListWithDouble = []
     let applianceTagsListWithDouble = []
     let ustensilsTagsListWithDouble = []
     matchingRecipes.forEach(recipe =>{
-        recipe.ingredients.forEach(i => ingredientsTagsListWithDouble.push(i.ingredient.toLowerCase()))
-        applianceTagsListWithDouble.push(recipe.appliance.toLowerCase())
-        recipe.ustensils.forEach(ustensil => ustensilsTagsListWithDouble.push(ustensil.toLowerCase()))
+        recipe.ingredients.forEach(i => ingredientsTagsListWithDouble.push(i.ingredient))
+        applianceTagsListWithDouble.push(recipe.appliance)
+        recipe.ustensils.forEach(ustensil => ustensilsTagsListWithDouble.push(ustensil))
     })
 
     function removingDouble(listOfTags){
@@ -167,14 +110,21 @@ function getTags(matchingRecipes){
         "appliances":applianceTagsList,
         "ustensils":ustensilsTagsList
     }
-
 }
 
-const ingredientsTagsDisplay = document.getElementById("ingredients-display")
-const appliancesTagsDisplay = document.getElementById("appliances-display")
-const ustensilsTagsDisplay = document.getElementById("ustensils-display")
+searchTagDom.addEventListener("focusin", e => openTagsField(e))
 
-// display the tags
+function openTagsField(e){
+    tagsFieldOpened = {
+        "ingredients":false,
+        "appliances":false,
+        "ustensils":false
+    }
+    let tagField = e.target.id;
+    tagsFieldOpened[tagField] = true
+    tagsDisplay()
+}
+
 function tagsDisplay(){
     let ingredientsHtml = ""
     generalListOfTags.ingredients.forEach(ingredient =>
@@ -209,43 +159,17 @@ function tagsDisplay(){
     }
 }
 
-const searchTagDom = document.getElementById("tagSearch")
-
-searchTagDom.addEventListener("focusin", e => openTagsField(e))
-
-let tagsFieldOpened = {
-    "ingredients":false,
-    "appliances":false,
-    "ustensils":false
+function tagSearchInput(dom){
+    getTags(matchingRecipes)
+    let currentInputValue = dom.value
+    generalListOfTags[dom.id] = generalListOfTags[dom.id].filter(tag => stringLoweredCaseWithoutAccent(tag).includes(stringLoweredCaseWithoutAccent(currentInputValue)))
+    tagsDisplay()
 }
 
-
-function openTagsField(e){
-    tagsFieldOpened = {
-        "ingredients":false,
-        "appliances":false,
-        "ustensils":false
-    }
-    tagField = e.target.id;
-    tagsFieldOpened[tagField] = true
-    let currentTagFieldDom = e.target
-    filterByTagInput(currentTagFieldDom)
-    update()
+function selectTag(tag){
+    tag = stringLoweredCaseWithoutAccent(tag)
 }
-
-
-let tagSearchInput = ""
-
-function filterByTagInput(currentTagFieldDom){
-    currentTagFieldDom.addEventListener("input", function(){
-        tagSearchInput = currentTagFieldDom.value;
-        generalListOfTags[currentTagFieldDom.id] = generalListOfTags[currentTagFieldDom.id].filter(tag => tag.includes(tagSearchInput))
-        tagsDisplay()
-    })
-}
-
-
-
+/*
 function selectTag(tag){
     tag = stringLoweredCaseWithoutAccent(tag)
     let tagType = ""
