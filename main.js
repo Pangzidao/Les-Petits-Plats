@@ -49,7 +49,7 @@ function getRecipeNameIngredientsDescriptionString(recipe){
 }
 
 function searchBar(searchedElementsBar){
-    let searchBarMatchingIds = []
+    searchBarMatchingIds = []
     recipes.forEach(recipe => {
         let elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
         let recipeIsMatching = searchedElementsBar.every(element => elementsSearched.includes(element))
@@ -57,7 +57,47 @@ function searchBar(searchedElementsBar){
             searchBarMatchingIds.push(recipe.id)
         }
     })
-    filterRecipes(searchBarMatchingIds)
+
+    matchingIds()
+
+}
+
+
+function filterByTag(){
+    filterByTagMatchingIds = []
+    let tags = []
+    tagsSelected.forEach(tag => tags.push(stringLoweredCaseWithoutAccent(tag.tag)))
+    console.log(tags)
+    recipes.forEach(recipe => {
+        let elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
+        let recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
+        if(recipeIsMatching === true){
+            filterByTagMatchingIds.push(recipe.id)
+        }
+
+    })
+
+    matchingIds()
+}
+
+let searchBarMatchingIds = []
+
+recipes.forEach(recipe => searchBarMatchingIds.push(recipe.id))
+
+let filterByTagMatchingIds = []
+recipes.forEach(recipe => filterByTagMatchingIds.push(recipe.id))
+
+
+function matchingIds(){
+    let allIds = []
+    let matchingIds = []
+    recipes.forEach(recipe => allIds.push(recipe.id))
+    allIds.forEach(id => {
+        if (searchBarMatchingIds.includes(id) && filterByTagMatchingIds.includes(id)){
+            matchingIds.push(id)
+        }
+    })
+    filterRecipes(matchingIds)
 }
 
 function filterRecipes(ids){
@@ -202,6 +242,7 @@ function selectTag(tag){
     //update()
     tagsSelectedDisplay()
     closeTagsField()
+    filterByTag()
     update()
 }
 
@@ -220,31 +261,30 @@ function tagsSelectedDisplay(){
 
 function removeTag(index){  
     tagsSelected.splice(index, 1)
-    //filterByTag()
     tagsSelectedDisplay()
     closeTagsField()
+    filterByTag()
     update()
 }
-/*
-function filterByTag(){
-    let recipeIngredientsApplianceUstensilsArray = []
-    let filterByTagMatchingIds = []
-    let tags = []
-    tagsSelected.forEach(tag => tags.push(tag.tag))
-    console.log(tags)
-    recipes.forEach(recipe =>{
-        recipeIngredientsApplianceUstensilsArray = []
-        recipe.ingredients.forEach(i => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(i.ingredient)))
-        recipe.ustensils.forEach(u => recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(u)))
-        recipeIngredientsApplianceUstensilsArray.push(stringLoweredCaseWithoutAccent(recipe.appliance))
-        let recipeIsMatching = tags.every((tag) => recipeIngredientsApplianceUstensilsArray.includes(tag))
-        if(recipeIsMatching === true){
-            filterByTagMatchingIds.push(recipe.id)
-        }
+
+function getRecipeIngredientsApplianceUstensilsString(recipe){
+    let recipeIngredientsArray = []
+    recipe.ingredients.forEach(i => {
+        recipeIngredientsArray.push(i.ingredient)
     })
-    filterRecipes(filterByTagMatchingIds)
+
+    let recipeUstensilsArray = []
+
+    recipe.ustensils.forEach(u => recipeUstensilsArray.push(u))
+    
+    const recipeIngredientString = recipeIngredientsArray.toString();
+    const recipeUstensilsString = recipeUstensilsArray.toString();
+
+    return stringLoweredCaseWithoutAccent(recipeIngredientString + " " + recipe.appliance + " " + recipeUstensilsString)
 }
-*/
+
+
+
 
 function recipesDisplay(recipes){
 
