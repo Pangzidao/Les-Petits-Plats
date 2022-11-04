@@ -67,7 +67,6 @@ function filterByTag(){
     filterByTagMatchingIds = []
     let tags = []
     tagsSelected.forEach(tag => tags.push(stringLoweredCaseWithoutAccent(tag.tag)))
-    console.log(tags)
     recipes.forEach(recipe => {
         let elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
         let recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
@@ -292,49 +291,61 @@ function recipesDisplay(recipes){
     
     let html = ""
 
-    recipes.forEach(recipe =>{
-        
-        let ingredientHtml = ""
+    if (recipes.length === 0){
+        html += '<p>Aucune recette ne correspond à votre recherche ...<br>vous pouvez chercher "tarte aux pommes", "poisson", etc.</>'
+    }else{
 
-        recipe.ingredients.forEach(i => {
-            if("quantity" in i === false){
-                ingredientHtml +=`
-            <p>${i.ingredient}</p>
+        recipes.forEach(recipe =>{
+        
+            let ingredientHtml = ""
+    
+            recipe.ingredients.forEach(i => {
+                if("quantity" in i === false){
+                    ingredientHtml +=`
+                <p>${i.ingredient}</p>
+                `
+                }else if("unit" in i === false){
+                    ingredientHtml +=`
+                <p>${i.ingredient}: ${i.quantity}</p>
+                `                  
+                }else{
+                    ingredientHtml += `
+                    <p>${i.ingredient}: ${i.quantity} ${i.unit}</p>
+                    `  
+                } 
+            })
+    
+            html += `
+                <div class="recipe-card" onclick="selectRecipe('${recipe.name}')">
+                    <div class="photo-holder"></div>
+                    <div class="recipe-text">
+                        <div class="recipe-header">
+                            <h2>${recipe.name}</h2>
+                            <p class="recipe-time"><i class="fa-regular fa-clock"></i>${recipe.time} min</p>
+                        </div>
+    
+                        <div class="recipe-main-text">
+                            <div class="ingredients-list">${ingredientHtml}</div>
+                            <p class="recipe-description">${recipe.description}</p>
+                        </div>
+    
+                        
+                    </div>
+    
+                </div>
             `
-            }else if("unit" in i === false){
-                ingredientHtml +=`
-            <p>${i.ingredient}: ${i.quantity}</p>
-            `                  
-            }else{
-                ingredientHtml += `
-                <p>${i.ingredient}: ${i.quantity} ${i.unit}</p>
-                `  
-            } 
         })
 
-        html += `
-            <div class="recipe-card">
-                <div class="photo-holder"></div>
-                <div class="recipe-text">
-                    <div class="recipe-header">
-                        <h2>${recipe.name}</h2>
-                        <p class="recipe-time"><i class="fa-regular fa-clock"></i>${recipe.time} min</p>
-                    </div>
+    }
 
-                    <div class="recipe-main-text">
-                        <div class="ingredients-list">${ingredientHtml}</div>
-                        <p class="recipe-description">${recipe.description}</p>
-                    </div>
 
-                    
-                </div>
-
-            </div>
-        `
-    })
 
     recipesSection.innerHTML = html
 
+}
+
+function selectRecipe(e){
+    console.log(e)
 }
 
 init()

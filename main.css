@@ -12,6 +12,16 @@ header{
     align-items: center;
 }
 
+#searchBar{
+    background-color: #E7E7E7;
+    border-radius: 5px;
+    height: 69px;
+    font-size: 18px;
+}
+#tagSearch{
+    display: flex;
+    flex-wrap: nowrap;
+}
 .searchByTagOptions{
     color:white;
 }
@@ -23,6 +33,11 @@ header{
 .searchByTagOptions:focus::-webkit-input-placeholder {
     color: transparent;
 }
+
+.searchByTagOptions:focus{
+    width: 45vw;
+}
+
 
 .ingredient{
     background-color: #3282F7;
@@ -59,16 +74,21 @@ header h1{
 #searchButton{
     border: none;
     background-color: lightgrey;
+    font-size: x-large;
 }
 
 #tags-selected{
     display: flex;
 }
 
+.tagSelected{
+    margin: 10px;
+}
+
 
 #recipes{
     position: absolute;
-    top:300px;
+    top:350px;
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
@@ -79,8 +99,22 @@ header h1{
 .tags-display{
     display: flex;
     flex-wrap: wrap;
-    margin-left: 22px;
     z-index: 2;
+}
+
+#ingredients-display{
+    margin-left: 12px;
+    width: 45vw;
+}
+
+#appliances-display{
+    margin-left:260px;
+    width: 45vw;
+}
+
+#ustensils-display{
+    margin-left: 510px;
+    width: 45vw;
 }
 
 .recipe-card{
@@ -119,7 +153,7 @@ header h1{
 
 #tagSearchContainer{
     position: absolute;
-    top:220px;
+    top:250px;
     z-index: 2;
 }
 
