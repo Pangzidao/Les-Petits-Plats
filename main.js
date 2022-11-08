@@ -13,6 +13,7 @@ function stringLoweredCaseWithoutAccent(string){
 }
 
 function init(){
+    chevronDisplay()
     recipesDisplay(recipes)
     getTags(recipes)
 }
@@ -157,6 +158,7 @@ function getTags(matchingRecipes){
 
 searchTagDom.addEventListener("focusin", e => openTagsField(e))
 
+
 function openTagsField(e){
 
 
@@ -167,9 +169,59 @@ function openTagsField(e){
     }
     let tagField = e.target.id;
     tagsFieldOpened[tagField] = true
+    chevronDisplay()
     tagsDisplay()
 }
 
+function chevronDisplay(){
+    const chevronUpIngredients = document.getElementById("up-ingredients")
+    const chevronUpAppliances = document.getElementById("up-appliances")
+    const chevronUpUstensils = document.getElementById("up-ustensils")
+    const chevronDownIngredients = document.getElementById("down-ingredients")
+    const chevronDownAppliances = document.getElementById("down-appliances")
+    const chevronDownUstensils = document.getElementById("down-ustensils")
+
+    const ingredientsResearchDOM = document.getElementById("ingredients")
+    const appliancesResearchDOM = document.getElementById("appliances")
+    const ustensilsResearchDOM = document.getElementById("ustensils")
+
+
+    if (tagsFieldOpened["ingredients"] === true){
+        chevronUpIngredients.style.display = "none"
+        chevronDownIngredients.style.display = "inline"
+        ingredientsResearchDOM.setAttribute("placeholder", "Rechercher un ingrédient")
+    }else{
+        chevronUpIngredients.style.display = "inline"
+        chevronDownIngredients.style.display = "none"
+        ingredientsResearchDOM.setAttribute("placeholder", "Ingredients")
+
+    }
+
+    if (tagsFieldOpened["appliances"] === true){
+        chevronUpAppliances.style.display = "none"
+        chevronDownAppliances.style.display = "inline"
+        appliancesResearchDOM.setAttribute("placeholder", "Rechercher un appareil")
+
+    }else{
+        chevronUpAppliances.style.display = "inline"
+        chevronDownAppliances.style.display = "none"
+        appliancesResearchDOM.setAttribute("placeholder", "Appareil")
+
+    }
+
+    if (tagsFieldOpened["ustensils"] === true){
+        chevronUpUstensils.style.display = "none"
+        chevronDownUstensils.style.display = "inline"        
+        ustensilsResearchDOM.setAttribute("placeholder", "Rechercher un ustensile")
+
+    }else{
+        chevronUpUstensils.style.display = "inline"
+        chevronDownUstensils.style.display = "none"
+        ustensilsResearchDOM.setAttribute("placeholder", "Ustensiles")
+
+    }
+
+}
 
 function closeTagsField(){
     tagsFieldOpened = {
@@ -181,7 +233,7 @@ function closeTagsField(){
     let inputs = document.getElementsByClassName("searchByTagOptions")
     inputs = [... inputs]
     inputs.forEach(input => input.value = "")
-
+    chevronDisplay()
     tagsDisplay()
 }
 
@@ -252,7 +304,7 @@ function tagsSelectedDisplay(){
     let html=""
     tagsSelected.forEach(function(tag, index) {
 
-        html += `<div class="tagSelected ${tag.tagType}"><p>${tag.tag}</p><i class="fa-solid fa-xmark " onclick="removeTag('${index}')"></i></div>`
+        html += `<div class="tagSelected ${tag.tagType}"><p>${tag.tag}</p><i class="fa-regular fa-circle-xmark" onclick="removeTag('${index}')"></i></div>`
         
     })
     tagsSelectedDOM.innerHTML = html
@@ -302,15 +354,15 @@ function recipesDisplay(recipes){
             recipe.ingredients.forEach(i => {
                 if("quantity" in i === false){
                     ingredientHtml +=`
-                <p>${i.ingredient}</p>
+                <p><span class = "ingredientName">${i.ingredient}</span></p>
                 `
                 }else if("unit" in i === false){
                     ingredientHtml +=`
-                <p>${i.ingredient}: ${i.quantity}</p>
+                <p><span class = "ingredientName">${i.ingredient}:</span> ${i.quantity}</p>
                 `                  
                 }else{
                     ingredientHtml += `
-                    <p>${i.ingredient}: ${i.quantity} ${i.unit}</p>
+                    <p><span class = "ingredientName">${i.ingredient}:</span> ${i.quantity} ${i.unit}</p>
                     `  
                 } 
             })
