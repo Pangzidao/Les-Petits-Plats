@@ -1,41 +1,45 @@
-
-let matchingRecipes = recipes
+// variables globales
 let generalListOfTags = {}
-const tagsSelected = []
+let tagsSelected = []
 let tagsFieldOpened = {}
 let searchBarMatchingIds = []
 let filterByTagMatchingIds = []
-let currentInputValue = ''
+let matchingRecipes = []
 
-const ingredientsTagsDisplay = document.getElementById('ingredients-display')
-const appliancesTagsDisplay = document.getElementById('appliances-display')
-const ustensilsTagsDisplay = document.getElementById('ustensils-display')
+// event listeners
+
 const searchTagDom = document.getElementById('tagSearch')
-const searchedElementInput = document.getElementById('elementSearched')
 
-searchedElementInput.addEventListener('input', searchBarInput)
 searchTagDom.addEventListener('focusin', e => openTagsField(e))
 searchTagDom.addEventListener('input', e => tagSearchInput(e.target))
 
-recipes.forEach(recipe => searchBarMatchingIds.push(recipe.id))
-recipes.forEach(recipe => filterByTagMatchingIds.push(recipe.id))
+const searchedElementInput = document.getElementById('elementSearched')
 
-function stringLoweredCaseWithoutAccent (string) {
-  return string.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
-}
+searchedElementInput.addEventListener('input', searchBarInput)
 
+//Initialisation à l'ouverture de la page
 function init () {
-  searchByTagsDisplay()
+  matchingRecipes = recipes
+  recipes.forEach(recipe => searchBarMatchingIds.push(recipe.id))
+  recipes.forEach(recipe => filterByTagMatchingIds.push(recipe.id))
+  searchByTagsInputDisplay()
   recipesDisplay(recipes)
   getTags(recipes)
 }
 
+//Actualisation de l'affichage des recettes et des tags à chaque input de l'utilisateur
 function update () {
   recipesDisplay(matchingRecipes)
   getTags(matchingRecipes)
   tagsDisplay()
 }
 
+//Modifie les strings en miniscule et enlève les accents pour faciliter le filtrage des recettes
+function stringLoweredCaseWithoutAccent (string) {
+  return string.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+}
+
+// Recherche des recettes grâce à la barre de recherche
 function searchBarInput () {
   let searchedElementsBar = []
   const searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
@@ -70,37 +74,7 @@ function searchBar (searchedElementsBar) {
   matchingIds()
 }
 
-function filterByTag () {
-  filterByTagMatchingIds = []
-  const tags = []
-  tagsSelected.forEach(tag => tags.push(stringLoweredCaseWithoutAccent(tag.tag)))
-  recipes.forEach(recipe => {
-    const elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
-    const recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
-    if (recipeIsMatching === true) {
-      filterByTagMatchingIds.push(recipe.id)
-    }
-  })
-
-  matchingIds()
-}
-
-function matchingIds () {
-  const allIds = []
-  const matchingIds = []
-  recipes.forEach(recipe => allIds.push(recipe.id))
-  allIds.forEach(id => {
-    if (searchBarMatchingIds.includes(id) && filterByTagMatchingIds.includes(id)) {
-      matchingIds.push(id)
-    }
-  })
-  filterRecipes(matchingIds)
-}
-
-function filterRecipes (ids) {
-  matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
-  update()
-}
+// Recherche des recettes à l'aide des tags
 
 function getTags (matchingRecipes) {
   const ingredientsTagsListWithDouble = []
@@ -161,11 +135,25 @@ function openTagsField (e) {
   }
   const tagField = e.target.id
   tagsFieldOpened[tagField] = true
-  searchByTagsDisplay()
+  searchByTagsInputDisplay()
   tagsDisplay()
 }
 
-function searchByTagsDisplay () {
+function closeTagsField () {
+  tagsFieldOpened = {
+    ingredients: false,
+    appliances: false,
+    ustensils: false
+  }
+
+  let inputs = document.getElementsByClassName('searchByTagOptions')
+  inputs = [...inputs]
+  inputs.forEach(input => input.value = '')
+  searchByTagsInputDisplay()
+  tagsDisplay()
+}
+
+function searchByTagsInputDisplay () {
   const chevronUpIngredients = document.getElementById('up-ingredients')
   const chevronUpAppliances = document.getElementById('up-appliances')
   const chevronUpUstensils = document.getElementById('up-ustensils')
@@ -208,21 +196,12 @@ function searchByTagsDisplay () {
   }
 }
 
-function closeTagsField () {
-  tagsFieldOpened = {
-    ingredients: false,
-    appliances: false,
-    ustensils: false
-  }
-
-  let inputs = document.getElementsByClassName('searchByTagOptions')
-  inputs = [...inputs]
-  inputs.forEach(input => input.value = '')
-  searchByTagsDisplay()
-  tagsDisplay()
-}
 
 function tagsDisplay () {
+
+  const ingredientsTagsDisplay = document.getElementById('ingredients-display')
+  const appliancesTagsDisplay = document.getElementById('appliances-display')
+  const ustensilsTagsDisplay = document.getElementById('ustensils-display')
   let ingredientsHtml = ''
   generalListOfTags.ingredients.forEach(ingredient =>
     ingredientsHtml += `<p class="tagListElements" id="${ingredient}" onclick="selectTag(id)">${ingredient}</p>`
@@ -257,6 +236,7 @@ function tagsDisplay () {
 }
 
 function tagSearchInput (dom) {
+  let currentInputValue = ''
   getTags(matchingRecipes)
   currentInputValue = dom.value
   generalListOfTags[dom.id] = generalListOfTags[dom.id].filter(tag => stringLoweredCaseWithoutAccent(tag).includes(stringLoweredCaseWithoutAccent(currentInputValue)))
@@ -310,6 +290,41 @@ function getRecipeIngredientsApplianceUstensilsString (recipe) {
   return stringLoweredCaseWithoutAccent(recipeIngredientString + ' ' + recipe.appliance + ' ' + recipeUstensilsString)
 }
 
+function filterByTag () {
+  filterByTagMatchingIds = []
+  const tags = []
+  tagsSelected.forEach(tag => tags.push(stringLoweredCaseWithoutAccent(tag.tag)))
+  recipes.forEach(recipe => {
+    const elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
+    const recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
+    if (recipeIsMatching === true) {
+      filterByTagMatchingIds.push(recipe.id)
+    }
+  })
+
+  matchingIds()
+}
+
+// Récupération de l'id des recettes filtrées grâce à la barre de recherche et à la recherche par tag
+function matchingIds () {
+  const allIds = []
+  const matchingIds = []
+  recipes.forEach(recipe => allIds.push(recipe.id))
+  allIds.forEach(id => {
+    if (searchBarMatchingIds.includes(id) && filterByTagMatchingIds.includes(id)) {
+      matchingIds.push(id)
+    }
+  })
+  filterRecipes(matchingIds)
+}
+
+// Filtrage des recettes grâce à l'id des recettes filtrées
+function filterRecipes (ids) {
+  matchingRecipes = recipes.filter(recipe => ids.includes(recipe.id))
+  update()
+}
+
+// Affichage des recettes
 function recipesDisplay (recipes) {
   const recipesSection = document.getElementById('recipes')
 
@@ -362,8 +377,11 @@ function recipesDisplay (recipes) {
   recipesSection.innerHTML = html
 }
 
+
+// Sélection des recettes
 function selectRecipe (e) {
   console.log(e)
 }
+
 
 init()
