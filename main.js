@@ -42,7 +42,7 @@ function stringLoweredCaseWithoutAccent (string) {
 // Recherche des recettes grâce à la barre de recherche
 function searchBarInput () {
   let BarInputs = []
-  const searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
+  let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
   if (searchString.length > 2) {
     BarInputs = searchString.split(' ')
     searchBar(BarInputs)
@@ -64,8 +64,8 @@ function getRecipeNameIngredientsDescriptionString (recipe) {
 function searchBar (BarInputs) {
   searchBarMatchingIds = []
   recipes.forEach(recipe => {
-    const elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
-    const recipeIsMatching = BarInputs.every(element => elementsSearched.includes(element))
+    let elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
+    let recipeIsMatching = BarInputs.every(element => elementsSearched.includes(element))
     if (recipeIsMatching === true) {
       searchBarMatchingIds.push(recipe.id)
     }
