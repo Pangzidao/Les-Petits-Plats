@@ -249,8 +249,6 @@ function selectTag (tag) {
   if (generalListOfTags.appliances.includes(tag)) { tagType = 'appliance' }
   if (generalListOfTags.ustensils.includes(tag)) { tagType = 'ustensils' }
   tagsSelected.push({ tag, tagType })
-  // filterByTag()
-  // update()
   tagsSelectedDisplay()
   closeTagsField()
   filterByTag()
@@ -275,28 +273,28 @@ function removeTag (index) {
 }
 
 function getRecipeIngredientsApplianceUstensilsString (recipe) {
-  const recipeIngredientsArray = []
+  let recipeIngredientsArray = []
+  let recipeUstensilsArray = []
+
   recipe.ingredients.forEach(i => {
     recipeIngredientsArray.push(i.ingredient)
   })
 
-  const recipeUstensilsArray = []
-
   recipe.ustensils.forEach(u => recipeUstensilsArray.push(u))
 
-  const recipeIngredientString = recipeIngredientsArray.toString()
-  const recipeUstensilsString = recipeUstensilsArray.toString()
+  let recipeIngredientString = recipeIngredientsArray.toString()
+  let recipeUstensilsString = recipeUstensilsArray.toString()
 
   return stringLoweredCaseWithoutAccent(recipeIngredientString + ' ' + recipe.appliance + ' ' + recipeUstensilsString)
 }
 
 function filterByTag () {
   filterByTagMatchingIds = []
-  const tags = []
+  let tags = []
   tagsSelected.forEach(tag => tags.push(stringLoweredCaseWithoutAccent(tag.tag)))
   recipes.forEach(recipe => {
-    const elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
-    const recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
+    let elementsSearched = getRecipeIngredientsApplianceUstensilsString(recipe)
+    let recipeIsMatching = tags.every((tag) => elementsSearched.includes(tag))
     if (recipeIsMatching === true) {
       filterByTagMatchingIds.push(recipe.id)
     }
@@ -307,8 +305,8 @@ function filterByTag () {
 
 // Récupération de l'id des recettes filtrées grâce à la barre de recherche et à la recherche par tag
 function matchingIds () {
-  const allIds = []
-  const matchingIds = []
+  let allIds = []
+  let matchingIds = []
   recipes.forEach(recipe => allIds.push(recipe.id))
   allIds.forEach(id => {
     if (searchBarMatchingIds.includes(id) && filterByTagMatchingIds.includes(id)) {
@@ -377,11 +375,9 @@ function recipesDisplay (recipes) {
   recipesSection.innerHTML = html
 }
 
-
 // Sélection des recettes
 function selectRecipe (e) {
   console.log(e)
 }
-
 
 init()
