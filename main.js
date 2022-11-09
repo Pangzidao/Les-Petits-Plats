@@ -41,23 +41,27 @@ function stringLoweredCaseWithoutAccent (string) {
 
 // Recherche des recettes grâce à la barre de recherche
 function searchBarInput(){
-  let elementMatchingIds = []
+  let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
   let allRecipesIds = []
+  let BarInputs = []
+  let barInputsMatchingIds = []
+
   searchBarMatchingIds = []
+
   for (recipe of recipes){
       allRecipesIds.push(recipe.id)
-  } 
-  let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
+  }
+
   if (searchString.length > 2){
-      searchedElementsBar = searchString.split(" ");
-      for(let elt of searchedElementsBar){
-          if (elt.length > 0){
-              elementMatchingIds.push(searchBar(elt))}
+      BarInputs = searchString.split(" ");
+      for(let input of BarInputs){
+        barInputsMatchingIds.push(searchBar(input))
+        console.log(barInputsMatchingIds)
       }
   }
 
   for (let id of allRecipesIds){
-      if (elementMatchingIds.every(ids => ids.includes(id))){
+      if (barInputsMatchingIds.every(ids => ids.includes(id))){
           searchBarMatchingIds.push(id)
       }
   }
