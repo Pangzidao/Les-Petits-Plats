@@ -41,14 +41,14 @@ function stringLoweredCaseWithoutAccent (string) {
 
 // Recherche des recettes grâce à la barre de recherche
 function searchBarInput () {
-  let searchedElementsBar = []
+  let BarInputs = []
   const searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
   if (searchString.length > 2) {
-    searchedElementsBar = searchString.split(' ')
-    searchBar(searchedElementsBar)
+    BarInputs = searchString.split(' ')
+    searchBar(BarInputs)
   } else {
-    searchedElementsBar = []
-    searchBar(searchedElementsBar)
+    BarInputs = []
+    searchBar(BarInputs)
   }
 }
 
@@ -61,11 +61,11 @@ function getRecipeNameIngredientsDescriptionString (recipe) {
   return stringLoweredCaseWithoutAccent(recipe.name + ' ' + recipe.description + ' ' + recipeIngredientString)
 }
 
-function searchBar (searchedElementsBar) {
+function searchBar (BarInputs) {
   searchBarMatchingIds = []
   recipes.forEach(recipe => {
     const elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
-    const recipeIsMatching = searchedElementsBar.every(element => elementsSearched.includes(element))
+    const recipeIsMatching = BarInputs.every(element => elementsSearched.includes(element))
     if (recipeIsMatching === true) {
       searchBarMatchingIds.push(recipe.id)
     }
