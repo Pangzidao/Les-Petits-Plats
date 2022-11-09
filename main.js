@@ -56,7 +56,6 @@ function searchBarInput(){
       BarInputs = searchString.split(" ");
       for(let input of BarInputs){
         barInputsMatchingIds.push(searchBar(input))
-        console.log(barInputsMatchingIds)
       }
   }
 
@@ -74,6 +73,7 @@ function searchBar(searchedElement){
   let ingredientMatching = []
   let descriptionMatching = []
   let allRecipesIds = []
+
   for (recipe of recipes){
       if (stringLoweredCaseWithoutAccent(recipe.name).includes(searchedElement)){
           nameMatching.push(recipe.id)
@@ -86,6 +86,7 @@ function searchBar(searchedElement){
       if (stringLoweredCaseWithoutAccent(recipe.description).includes(searchedElement)){
           descriptionMatching.push(recipe.id)
       }
+
       allRecipesIds.push(recipe.id)
   }
   for (id of allRecipesIds){
