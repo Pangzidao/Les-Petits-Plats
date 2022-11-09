@@ -40,38 +40,56 @@ function stringLoweredCaseWithoutAccent (string) {
 }
 
 // Recherche des recettes grâce à la barre de recherche
-function searchBarInput () {
-  let searchedElementsBar = []
-  const searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
-  if (searchString.length > 2) {
-    searchedElementsBar = searchString.split(' ')
-    searchBar(searchedElementsBar)
-  } else {
-    searchedElementsBar = []
-    searchBar(searchedElementsBar)
-  }
-}
-
-function getRecipeNameIngredientsDescriptionString (recipe) {
-  const recipeIngredientsArray = []
-  recipe.ingredients.forEach(i => {
-    recipeIngredientsArray.push(i.ingredient)
-  })
-  const recipeIngredientString = recipeIngredientsArray.toString()
-  return stringLoweredCaseWithoutAccent(recipe.name + ' ' + recipe.description + ' ' + recipeIngredientString)
-}
-
-function searchBar (searchedElementsBar) {
+function searchBarInput(){
+  let elementMatchingIds = []
+  let allRecipesIds = []
   searchBarMatchingIds = []
-  recipes.forEach(recipe => {
-    const elementsSearched = getRecipeNameIngredientsDescriptionString(recipe)
-    const recipeIsMatching = searchedElementsBar.every(element => elementsSearched.includes(element))
-    if (recipeIsMatching === true) {
-      searchBarMatchingIds.push(recipe.id)
-    }
-  })
+  for (recipe of recipes){
+      allRecipesIds.push(recipe.id)
+  } 
+  let searchString = stringLoweredCaseWithoutAccent(searchedElementInput.value)
+  if (searchString.length > 2){
+      searchedElementsBar = searchString.split(" ");
+      for(let elt of searchedElementsBar){
+          if (elt.length > 0){
+              elementMatchingIds.push(searchBar(elt))}
+      }
+  }
 
+  for (let id of allRecipesIds){
+      if (elementMatchingIds.every(ids => ids.includes(id))){
+          searchBarMatchingIds.push(id)
+      }
+  }
   matchingIds()
+}
+
+function searchBar(searchedElement){
+  elementMatchingIds = []
+  let nameMatching = []
+  let ingredientMatching = []
+  let descriptionMatching = []
+  let allRecipesIds = []
+  for (recipe of recipes){
+      if (stringLoweredCaseWithoutAccent(recipe.name).includes(searchedElement)){
+          nameMatching.push(recipe.id)
+      }
+      for (ingredient of recipe.ingredients){
+          if (stringLoweredCaseWithoutAccent(ingredient.ingredient).includes(searchedElement)){
+              ingredientMatching.push(recipe.id)
+          }
+      }
+      if (stringLoweredCaseWithoutAccent(recipe.description).includes(searchedElement)){
+          descriptionMatching.push(recipe.id)
+      }
+      allRecipesIds.push(recipe.id)
+  }
+  for (id of allRecipesIds){
+      if (nameMatching.includes(id) || ingredientMatching.includes(id) || descriptionMatching.includes(id)){
+          elementMatchingIds.push(id)
+      }
+  }
+  return elementMatchingIds
 }
 
 // Recherche des recettes à l'aide des tags
