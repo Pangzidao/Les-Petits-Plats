@@ -19,6 +19,7 @@ header{
     font-size: 18px;
     margin:15px;
     width: auto;
+
 }
 #tagSearch{
     display: flex;
@@ -198,6 +199,10 @@ header h1{
     background-color: #C7BEBE;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+}
+
+#tagSearchContainer{
+    margin-left: 50px;
 }
 
 .recipe-header{
